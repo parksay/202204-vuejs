@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <title>Document</title>
+</head>
+<body>
+    <div id="app-1">
+        <div>
+            <p v-bind:class="{ active: isActive }">"v-bind:class='t'" and "class='u'" attribute can exist at the same time</p>
+        </div>
+        <div>
+            <p class="staticClass" v-bind:class="{ active: isActive, 'text-danger': hasError}">hello world!</p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+    <div id="app-2">
+        <div>
+            <p class="staticClass" v-bind:class="classValObj">class defined by obj val!</p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+    <div id="app-3">
+        <div>
+            <p class="staticClass" v-bind:class="classObjFromComputed">class defined by computed val!</p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+    <div id="app-4">
+        <div>
+            <p class="staticClass" v-bind:class="[key1, key2, isKey ? 'hello' : 'world']"> setting class list using data array. you also can use js exp </p>
+            <p class="staticClass" v-bind:class="[key1, key2, { toggleClass: toggleKey }]"> add or remove class according to bool val </p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    
+    <div id="app-5">
+        <div>
+            <p v-bind:style="{color: trueVal, fontSize: fsize}"> setting style by vue data </p>
+            <p v-bind:style="{color: isTrue ? trueVal : falseVal, fontSize: fsize}"> setting style using js exp. try input below line into console </p>
+            <p>app5.isTrue = true;</p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    
+    <div id="app-6">
+        <div>
+            <p v-bind:style="styleObjFromData">the style of this text is from data</p>
+            <p v-bind:style="getStyleObj">the style of this text is from computed</p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+    <div id="app-7">
+        <div>
+            <p v-bind:style="[styleObj1, styleObj2]">the style of this text by array</p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+    <script>
+        //data binding v-bind 는 주로 class나 style 지정할 때 주로 사용함
+        //그래서 class와 style 지정에 특화된 기능을 제공함
+        //표현식은 단순한 문자열뿐만 아니라 객체나 배열도 가능함.
+        var app1 = new Vue({
+            el: '#app-1',
+            data: {
+                isActive: true,
+                hasError: false,
+                classValObj: {active: true, 'text-danger':false}
+            },
+            
+        })
+
+        //객체로 key랑 val 정해서 그대로 넣어줘도 됨. 아래 예시.
+        //<p v-bind:class="classValObj">
+        var app2 = new Vue({
+            el: '#app-2',
+            data: {
+                isActive: true,
+                hasError: false,
+                classValObj: {active: true, 'text-danger':false}
+            },
+            
+        })
+
+        //computed 에서 함수를 불러다가 return 값으로 객체를 넘겨주는 방식으로도 사용할 수 있음.
+        //유용하고 강력한 기능이라고 함.
+        //<p v-bind:class="classObjFromComputed">
+        var app3 = new Vue({
+            el: '#app-3',
+            data: {
+                isActive: true,
+                hasError: false
+            },
+            computed: {
+                classObjFromComputed: function() {
+                    return {active: this.isActive && !this.error, 'text-danger': this.error && this.error.type == 'fatal'};
+                }
+            }
+        })
+
+        //배열도 가능함. ' [] ' 배열 안에 data 속성의 key값을 넣어주면, 그와 짝을 이루는 val 값들이 들어가서 배열 요소가 됨.
+        //한 요소 안에 JavaScript 표현식도 쓸 수 있음. 아래 예시
+        // <p v-bind:class="[isKey ? 'hello' : 'world']">
+        var app4 = new Vue({
+            el: '#app-4',
+            data: {
+                key1: "val1",
+                key2: 'val2',
+                isKey: false,
+                toggleKey: true
+            }
+        })
+
+
+        //style 지정할 때는 문법은 비슷한데 안에 들어가는 내용은 다르게 들어감
+        //언뜻 보면 그냥 css 랑 비슷해보임. 그치만 값이 변수들에 의해 dynamic 함.
+        //삼항 연산자도 쓸 수 있음. 아래 예시.
+        // <p v-bind:style="{color: isTrue ? trueVal : falseVal} >
+        var app5 = new Vue({
+            el: '#app-5',
+            data: {
+                colorVal: 'black',
+                trueVal: 'blue',
+                falseVal: 'red',
+                isTrue: false,
+                fsize: '26'
+            }
+        })
+
+        // 객체로 바로 넣어줄 수도 있음. 아래 예시.
+        // <p v-bind:style="styleObjFromData">
+        // class 때와 마찬가지로 computed 에서 함수 불러다가 받을 수도 있음. 아래 예시.
+        // <p v-bind:style="getStyleObj">
+        var app6 = new Vue({
+            el: '#app-6',
+            data: {
+                styleObjFromData: {
+                    color: 'red',
+                    fontSize: '13px'
+                }
+            },
+            computed : {
+                getStyleObj : function () {
+                    return { color: 'blue', fontSize: '21px'};
+                }
+            }
+        })
+
+        // 객체로 이루어진 배열들을 넣어줄 수도 있음.
+        var app7 = new Vue({
+            el: '#app-7',
+            data: {
+                styleObj1: {
+                    color: 'red'
+                },
+                styleObj2: {
+                    fontSize: '28px'
+                }
+            }
+        })
+    </script>
+</body>
+</html>
