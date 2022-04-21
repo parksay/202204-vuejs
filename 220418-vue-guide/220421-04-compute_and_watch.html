@@ -13,6 +13,9 @@
             <p> original msg : {{ msg }} </p>
         </div>
         <div>
+            <p> app1.msg = "changed msg"; </p>
+        </div>
+        <div>
             <p> reversed msg : {{ reversedMsg }}</p>
         </div>
         <div>
@@ -24,8 +27,9 @@
 
     <div id="app-2">
         <p> {{ fullName }} </p>
-        <p> input below line in console </p>
+        <p> input below line in console and watch logs</p>
         <p> app2.firstName = 'Tom'; </p>
+        <p> app2.lastName = 'Cruise'; </p>
     </div>
     <div>----------------------------------------------------<br></div> 
 
@@ -77,7 +81,7 @@
                 }
             }
         })
-        app1.msg = 'try changing the value of msg on console';
+        app1.msg = 'try input below line in console';
 
         //computed 속성과 watch 속성
         //위에서 봤던 computed 속성은 소프트웨어 공학에서 이야기하는 '선언형 프로그래밍' 방식이라고 함.
@@ -94,9 +98,11 @@
             },
             watch: {
                 firstName: function(val) {
+                    console.log('passing throug watch > firstName');
                     this.fullName = val + ' ' + this.lastName;
                 },
                 lastName: function(val) {
+                    console.log('passing throug watch > LastName');
                     this.fullName = this.firstName + ' ' + val;
                 }
             }
