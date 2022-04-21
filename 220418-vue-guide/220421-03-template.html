@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <!-- v-once -->
+    <div id='app-1'>
+        <span class="responsible">message: {{ msg }} </span>
+        <br>
+        <span class="non-responsible" v-once>this message is not updated: {{ msg }} </span>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    <!-- v-html -->
+    <div id='app-2'>
+        <p class="responsible"> {{ text4HTML }} </p>
+        <p class="non-responsible" v-html="text4HTML"> the message here disappears </p>
+    </div>
+    <div><input type="button" value="attack server" onclick="changeInputContent()"></div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    <!-- v-bind -->
+    <div id="app-3">
+        <div><input type="text" v-bind:id="idBefore" placeholder="check the id of this tag" /></div>
+        <div><input type="text" v-bind:id="idAfter" placeholder="check the id of this tag" /></div>
+        <div><input type="text" v-bind:class="classVal" placeholder="check the class of this tag" /></div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    <!-- JavaScript exp -->
+    <div id="app-4">
+        <div> {{ numVal * 2 }} </div>
+        <div> {{ textVal.split('').reverse().join('') }} </div>
+        <!-- below line doesnt work. It occurs error -->
+        <!-- <div> {{ var val = numVal; console.log(val * 2); }} </div> -->
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    <!-- directive parameter -->
+    <div id="app-5">
+        <div><p v-if="isDisplayBefore"> 'isDisplay' decides display value </p></div>
+        <div><a v-bind:href="urlValBefore"> click this text and check the url </a></div>
+        <div><input type="button" v-on:click="vueClickBefore" value="testBtn"/></div>
+        <div><p v-if="isDisplayAfter"> 'isDisplay' decides display value (changed) </p></div>
+        <div><a v-bind:href="urlValAfter"> click this text and check the url (changed) </a></div>
+        <div><input type="button" v-on:click="vueClickAfter" value="testBtn"/></div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    
+
+    <!-- dynamic directive parameter -->
+    <div id="app-6">
+        <div>
+            <input type="text" v-bind:[key1]="val1" value="check parameter" />
+        </div>
+        <div>
+            <input type="button" v-on:[event1]="handle1" value="click here">
+        </div>
+        <div>
+            <span v-bind:[customattr1]="yourAttr"> parameters in '[]' must be lower case </span>
+        </div>
+        <div>
+            <input type="text" v-bind:[key2]="val2" value="it changes dynamically"/>
+        </div>
+        <div>
+            <input type="button" v-on:[event2]="handle2" value="click here">
+        </div>
+        <div>
+            <span v-bind:[customattr2]="yourAttr2"> parameters in '[]' must be lower case </span>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+    
+    <!-- alias of directive -->
+    <div id="app-7">
+        <div><a v-bind:href="urlVal">this is full statement</a></div>
+        <div><a :href="urlVal">and this is alias</a></div>
+        <div><span :[key1]="val1"> also parameters can be alias </span></div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+    <script>
+        //디렉티브: 디렉티브는 Vue에서 제공하는 특수 속성임을 나타내는 v- 접두어가 붙어있으며 사용자가 짐작할 수 있듯 렌더링 된 DOM에 특수한 반응형 동작을 합니다.
+        //v-once 디렉티브
+        //값을 초기값으로 고정함. 나중에 값이 변하더라도 실시간으로 갱신하지 않음.
+        var app1 = new Vue({
+            el: '#app-1',
+            data: {
+                msg: 'this is msg before'
+            }
+        })
+        app1.msg = 'this is msg after';
+        //span.responsible => data가 동적으로 계속 바뀜
+        //span.non-responsible => 초기에 객체 생성할 때 넣어준 값에서 변하지 않음.
+
+
+        //v-html 디렉티브
+        //{{ msg }} 안에 넣으면 그냥 문자열로만 해석하기 때문에 html 요소로 parsing 하려면 v-html 디렉티브를 써야 함
+        var app2 = new Vue({
+            el: "#app-2",
+            data: {
+                text4HTML: '<span> this is span tag </span>'
+            }
+        })
+        //뭐 사용자 단에서 html 태그를 조작해서 공격할 수 있으니 조심해서 쓰라는 듯;
+        function changeInputContent() {
+            app2.text4HTML = "<input type='text' value='I can attack the server through'/>";
+        }
+
+
+        //v-bind 디렉티브
+        //html 짤 때 text 로 넣는 거는 {{ msg }} 로 가능. 이 문법은 머스태시(콧수염) 방식이라고 함.
+        //근데 태그 안에서는 콧수염 방식은 사용할 수 없음. <input id="{{ msg }}"> 이렇게는 안 된다는 말.
+        //그럼 어떻게 해? v-bind 라는 속성을 씀. 콜론 ' : ' 뒤로 어떤 속성에 연결할지 파라미터를 넘겨 주고, 등호 ' = ' 뒤로 값을 넣어 줌.
+        //<input v-bind:id="msg"> 이런 식으로. <input v-bind:class="msg"> 이렇게 콜론 뒤로 속성이 들어감. 등호 뒤로 값이 들어감.
+        var app3 = new Vue({
+            el: '#app-3',
+            data: {
+                idBefore: 'idFromVueBefore',
+                idAfter: 'idFromVueAfter',
+                classVal: 'classFromVue'
+            }
+        })
+        //값이 바뀌면 실시간으로 연동됨.
+        app3.idAfter="changedId"
+
+
+        //JavaScript 표현 식
+        var app4 = new Vue({
+            el: '#app-4',
+            data: {
+                numVal: 6,
+                textVal: 'hello world!'
+            }
+        })
+
+        //디렉티브 > 전달 인자
+        // 태그 안에서 콜론 ':' 뒤로 파라미터를 던져줄 수 있음 
+        // v-on:click / v-bind:class / v-bind:href 이런 식으로
+        var app5 = new Vue({
+            el: '#app-5',
+            data: {
+                isDisplayBefore: false,
+                urlValBefore: '?testKey=testVal',
+                isDisplayAfter: false,
+                urlValAfter: '?testKey=testVal'
+            },
+            methods: {
+                vueClickBefore: function() {
+                    alert('this is alert msg');
+                },
+                vueClickAfter: function() {
+                    alert('this is alert msg');
+                }
+            }
+        })
+        app5.isDisplayAfter = true;
+        app5.urlValAfter = '?changedKey=changedVal';
+        app5.vueClickAfter = function() {alert('changed msg');};
+
+
+        //디렉티브 > 동적 전달 인자
+        //태그 안에서는 대괄호 ' [] ' 안에 동적으로 파라미터 값을 넣을 수 있음. 나중에 가서 바꿔도 된다는 말. 아니, 오히려 자꾸 바뀌는 값은 동적으로 넣으라는 말.
+        // 예를 들어 v-bind:[key] = "val" / v-on:[eventKey] = "eventHandler" /  이런 식으로
+        var app6 = new Vue({
+            el: '#app-6',
+            data: {
+                key1: "class",
+                val1: "classFromVue",
+                event1: 'click',
+                handle1: "testFunc",
+                customattr1: "custAttribute",
+                yourAttr1: "yourAttribute",
+                key2: "class",
+                val2: "classFromVueBefore",
+                event2: 'click',
+                handle2: "testFuncBefore",
+                customattr2: "custAttributeBefore",
+                yourAttr2: "yourAttributeBefore"
+            },
+            method: {
+                testFuncBefore: function() {alert("here msg");},
+                testFuncAfter: function() {alert("changed msg");},
+            }
+        })
+        app6.key2 ="id";
+        app6.val2 ="classFromVueAfter";
+        app6.event2="mouseover";
+        app6.handle2="testFuncAfter";
+        app6.customattr2="custAttributeAfter";
+        app6.yourAttr2="yourAttributeAfter";
+
+
+        //축약어 
+        // ' v-bind:class ' 왼쪽 구문은 오른쪽으로 줄일 수 있음 ' :class '
+        // ' v-bind:href ' 왼쪽 구문은 오른쪽으로 줄일 수 있음 ' :href '
+        var app7 = new Vue({
+            el: '#app-7',
+            data: {
+                urlVal: '?hello=world',
+                key1: "customAttr",
+                val1: "customVal"
+            }
+        })
+        //<a v-on:click="doSomething"> ... </a> => <a @click="doSomething"> ... </a>
+        //<a @[eventkey]="eventHandler"> ... </a> //with parameter value eventkey
+    </script>
+</body>
+</html>
