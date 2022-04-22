@@ -1,0 +1,90 @@
+<!-- 상품 검색창 -->
+<div id="divSearchProduct">
+    <select id="sales_type" v-on:change="inputSelectVal">
+        <option v-for="item in optListSalesType"> {{ item }} </option>
+    </select>
+    <select id="mfcomp" v-on:change="inputSelectVal">
+        <option v-for="item in optListMfcomp"> {{ item }} </option>
+    </select>
+    <input type="text" class="inputTxt p15" id="schKeyword" v-model="searchKeyword" placeholder="검색어를 입력해 주세요.">
+    <a href="" class="btnType blue" name="btn" id="searchProductList" v-on:click.prevent="searchBtnEvent"><span>검색</span></a>
+</div>
+
+<script>
+    //vue 객체를 설계할 때는 어떤 값들을 data 속성에 변수들로 설정할지 잘 짜야 함
+    //마치 java 에서 객체 지향 설계할 때, class 만들 때 멤버 변수들 설정하는 것처럼.
+    var vueSearchDiv = new Vue({
+        el: '#divSearchProduct',
+        data: {
+            salesType: '전체',  //select#sales_type 현재 선택되어 있는 값
+            mfcomp: '전체',     //select#mfcomp 현재 선택되어 있는 값
+            searchKeyword: '',  //input#schKeyword 현재 입력되어 있는 값
+            optListSalesType: [''], //select#sales_type 안에 나열할 option 요소들의 값들
+            optListMfcomp: ['']     //select#mfcomp 안에 나열할 option 요소들의 값들
+
+        },
+        methods: {
+            //select 태그의 값이 바뀌면 이벤트 객체를 파라미터로 받아서, 
+            //대상 요소에 접근하고, ID 값을 받기
+            //select태그.value 하면 현재 선택되어 있는 option 값을 뽑아내옴.
+            //sel.value 하면 현재 선택된 option값을 받아옴
+            //그 값을 받아다가 vue 객체에 data 값으로 넣어 둠.
+            inputSelectVal: function (e) {
+                const sel = e.currentTarget;
+                switch(sel.id) {
+                    case 'sales_type' :
+                        this.salesType = sel.value;
+                        break;
+                    case 'mfcomp' :
+                        this.mfcomp = sel.value;
+                        break;
+                }
+            },
+            //ajax나 axios 로 서버로부터 list 값을 받아서 함수 안에 파라미터로 넣어 줌. (type 파라미터는 그냥 하드코딩 해도 되고 뭐 알아서)
+            //그 list 값을 받아와서 vue 객체 data 값으로 넣어 둠.
+            //그러면 위에서 v-for="list" 해놨기 때문에 list 안에서 요소를 하나씩 꺼내서 select 안에 option 값들로 나열해 줌.
+            //여기서는 분기문도 필요하고, select 안에서 나열되는 첫 번째 option 값은 항상 '전체'로 고정하느라고 methods 함수를 따로 만들어 두었음
+            //하지만 그런 거 필요 없으면 그냥 vueObj.list = list 해서 data에 바로 넣으면 되겠지.
+            //주의할 점은, 해당 함수를 실행하지 않으면 화면상에는 select에서 현재 선택된 option 값이 '전체'로 나와 있지만, vue 객체 안에 data 속성에서는 '전체' 값이 들어가 있지 않은 상태임. 그래서 초기값을 적절하게 쥐어 줘야 함.
+            updateOptList: function(type, list) {
+                const arr = new Array();
+                arr.push('전체');
+                
+                switch(type) {
+                    case 'sales' :
+                        this.optListSalesType = arr.concat(list);
+                        break;
+                    case 'mfcomp' :
+                        this.optListMfcomp = arr.concat(list);
+                        break;
+                }
+            },
+            //와... 코딩량 주는 거 봐. 원래는 script 나 jQuery 로 요소 하나하나 접근해서 value 다 받아오고 ajax로 넘겨줘야 하는데...
+            //그냥 vue 객체에서 this.schVal 이런 식으로 값을 바로 받아오니까 코딩 확 줄어듦.
+        
+            searchBtnEvent: function() {
+                const currentPagePL = document.querySelector('#currentPageProductList').value;
+                axios({
+                    url: 'getProductList-vue', 
+                    method: 'post',
+                    data: {
+                        salesType: this.salesType == '전체' ? '%' : this.salesType,
+                        mfcomp: this.mfcomp == '전체' ? '%' : this.mfcomp,
+                        keywordProductList: this.searchKeyword == '' ? '%' : this.searchKeyword,
+                        currentPage: currentPagePL,
+                        pageBlockSize: pageBlockSizeProductList	
+                    }
+                })
+                .then(function(result) { 
+                    console.log(result);
+                    inputProductListRows(result.data.list);
+                    createPaginationDiv(currentPagePL, result.data.totalCntProductList); 
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+        }
+    });
+
+</script>

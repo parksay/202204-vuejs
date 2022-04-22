@@ -1,0 +1,25 @@
+//220422
+- productList  / shoppingcart주문할 때
+	> purinfo 값 이상하게 들어가는데? 똑같은 값이 4개 들어감 => 아니네 잘 들어가네
+	> 주문일 때는 alert 안 띄우긔
+- shopping cart
+	>주문 완료 메세지
+**- refundlist
+	> 배송 상태에 따라서반품 가능 여부 바뀌기	=> 아, 해놨네. 버튼 보이고 안 보이고로 분기문
+
+//220421
+- eclipse 단축키 > 행 옮기기 / 복수하기 copy duplicate
+
+//220420 - vue prac
+/일정 
+~ 4/29 : JSP를 CDN 방식으로 바꾸기
+5/2 ~ : CDN 을 NPM 방식으로 바꾸기
+
+//220420 
+**-productList 
+	> photo
+
+//220418
+- 배포가 정확히 개념이 뭐임?
+**- 납부 방식 변경
+**- 랭킹닭컴
