@@ -1,0 +1,14 @@
+//$(document).on('click', 'a.btnType', function(){});
+                //     document.addEventListener('click', (e) => {
+                //         console.log("DOMLoaded click event");
+                //         console.log(e);
+                //         if (e.target.parentNode.tagName == 'a' && e.target.parentNode.classList.contains('btnType')) {
+                //             e.preventDefault();
+                //         }
+                //     });
+
+
+어떤 요소가 특정 클래스를 포함하는지?
+
+이거 글 이미 썼던 것 같기도 하고..
+찾아보고 올리기

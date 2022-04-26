@@ -1,0 +1,11 @@
+<tr>
+    <th>모델명</th>
+    <td colspan="1"><input type="text" class="inputTxt p100" name="sales_nm" v-bind:value="sales_nm" disabled/> </td>
+    <th>주문 수량</th>
+    <td colspan="1"><input type="number" min="1" class="inputTxt p100" name="pur_cnt" v-bind:value="pur_cnt" v-model="pur_cnt" /> </td>
+</tr>
+
+//v-bind와 v-model을 한 태그 안에 동시에 쓰지 못함.
+이유는 둘이 겹치는 기능이라 충돌해서
+v-bind는 value를 넘겨주는 것이고
+v-model는 value를 주거나 받는 것 연동하는 기능이라
