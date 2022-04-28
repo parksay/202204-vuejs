@@ -1,0 +1,70 @@
+<tbody id="cartListBody">
+    <tr v-for="(item, index) in cartList">
+        <td><span class="modelNm"> {{ item.model_nm }} </span> </td>
+        <td><span class="unitPrice"> {{ getPriceWithComma(index) }} </span> </td>
+        <td><input type="number" class="purCnt" v-model="item.pur_cnt" min="1" /></td>
+        <td><span  class="totalPrice"> {{ getTotalPrice(index) }} </span></td>
+        <td><input type="date" class="orderDate" v-on:input="setOrderDate(event, index)" v-bind:value="getOrderDate(index)" /></td>
+        <td><input type="button" class="delBtn" value="삭제" v-on:click="deleteCartList(index)"/></td>
+    </tr>
+</tbody>
+<script>
+
+    var tbodyShoppingCart = new Vue({
+        el: 'tbody#cartListBody',
+        data: {
+            cartList: [{}],
+        },
+        methods: {
+            getOrderDate: function(index) {    //2022-05-05 00:00:00.0 형태로 넘어와서
+                return this.cartList[index].orderDate.substring(0,10);
+            },
+            setOrderDate: function(e,index) {
+                this.cartList[index].orderDate = e.target.value;
+            }
+        },
+        mounted: function() {
+            this.getCartList();
+        },
+    });
+
+</script>
+
+vue 객체에는 리스트가 저장돼 있다.
+리스트를 이루고 있는 요소마다 orderDate 데이터가 있다.
+이 orderDate 를 화면상 수치와 연동하고 싶었다.
+DB에서 불러온 값을 화면에 뿌려주거나,
+화면에서 입력한 값을 DB에 넣거나 하려고 했다.
+
+v-model 을 쓰는 편이 적당했다.
+v-model은 양방향 바인딩이다.
+데이터가 바뀌면 화면이 바뀌고,
+화면이 바뀌면 데이터가 바뀐다.
+
+그런데 문제는 중간에 형태를 가공해야 한다는 점이다.
+DB에서 읽어올 때는 "2022-05-05 00:00:00.0" 처럼 읽어 온다.
+"2022-05-05" 형태로 출력하고 싶었다.
+따라서 v-model을 쓸 수 없었다.
+v-model을 쓰면 값을 주거나 받을 때 원하는 대로 형태를 바꾸지 못하고,
+"2022-05-05 00:00:00.0" 형태를 그대로 따라야 하기 때문이다.
+
+불러온 값에서 형태를 바꾼 뒤에 화면에 뿌려주는 일은 어렵지 않았다.
+v-bind:value 디렉티브를 써서 value 속성에 넣어주면 되는 일이다.
+문제는 반대 방향이었다.
+화면에서 입력한 데이터를 어떻게 가져올 것인가?
+
+이벤트를 사용하기로 했다.
+v-on:input 또는 v-on:change 등을 써서 값이 바뀔 때마다 바뀐 값을 받아온다.
+사용자가 입력한 값을 받아와서 내가 원하는 형태로 가공한 뒤에 원하는 위치에 넣어준다.
+
+
+또 문제는 파라미터였다.
+사용자가 날짜를 입력한 <input type="date"> 태그에서 파라미터를 어떻게 보내줘야 하는가?
+this.value는 작동하지 않았다.
+<input type="date" v-on:input="setOrderDate(this.value)">
+아마 변수를 Vue 에서 찾기 때문일 것 같다.
+결국 이벤트를 넘기는 방식으로 했다.
+<input type="date" v-on:input="setOrderDate(event, index)">
+event.target.value 로 값을 받아 오고, index로 위치를 받아 온다.
+
+
