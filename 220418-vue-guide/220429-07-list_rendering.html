@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <!-- //iterating list -->
+    <div id="app-1">
+        <h2> {{ sectionTitle }} </h2>
+        <ol>
+            <li v-for="item in fruitList"> {{ item.fname }} is {{ item.color }}</li>
+        </ol>
+        <ol>
+            <li v-for="(item, index) in fruitList"> {{ index+1 }}th item => {{ item.fname }} is {{ item.color }}</li>
+        </ol>
+        <ol>
+            <li v-for="item of fruitList"> {{ item.fname }} is {{ item.color }}</li>
+        </ol>
+        <ol>
+            <li v-for="(item, index) of fruitList"> {{ index+1 }}th item => {{ item.fname }} is {{ item.color }}</li>
+        </ol>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    
+
+
+    <script>
+
+        //v-for : iterating list / v-for : 리스트 반복하기
+        //v-for 디렉티브를 이용하면 리스트를 forEach 처럼 반복문을 돌릴 수 있다
+        //<li v-for="item in fruitList">
+        //item은 리스트 안에서 꺼내 오는 요소 하나하나들에 붙여주는 별칭이고, fruitList는 반복문을 돌릴 리스트 이름이다
+        //반복문을 돌리는 변수명은 Vue 객체 안의 data 속성에서 불러올 수 있다.
+        //반복문 안에서도 상위 속성에 모두 접근할 수 있다.
+        //v-for 디렉티브 안에서 파라미터를 하나 더 받을 수 있는데, 반복문의 해당 index를 받아올 수있다.
+        //<li v-for="(item, index) in fruitList"> 
+        //반복문 안에서 변수명처럼 쓸 수 있다.
+        // 한 가지, v-for 디렉티브 안에서 in 대신 of를 쓸 수 있다.
+        //<li v-for="item in fruitList"> // 아래와 같음
+        //<li v-for="item of fruitList">    //위와 같음
+        //<li v-for="(item, index) in fruitList">  //아래와 같음
+        //<li v-for="(item, index) of fruitList">   //위와 같음
+
+        var app1 = new Vue({
+            el: '#app-1',
+            data: {
+                sectionTitle: 'this is fruit and color list',
+                fruitList: [{fname:'apple',  color:'red'},
+                        {fname:'orange',  color:'orange'},
+                        {fname:'banana',  color:'yellow' },
+                        {fname:'melon',  color:'green'}]
+            },
+        });
+
+        
+        //v-for : iterating object / v-for: 객체 속성 반복하기
+        var app2 = new Vue({
+            el: '#app-2',
+            data: {
+                firstName: 'Tom',
+                lastName: 'Cruise',
+                height: '170cm',
+                birthday: '1962. 7. 3.'
+            }
+        });
+        //todo => 프론트 작성
+    //v-for : iterating list / v-for : 리스트 반복하기
+    </script>
+
+</body>
+</html>
