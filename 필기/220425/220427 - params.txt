@@ -1,0 +1,263 @@
+//01 - @RequestParam String
+/
+public int at1(@RequestParam String paramName)
+컨트롤러에서 위처럼 받으려면
+보낼 때 변수명 맞춰서 보내 줘야 함.
+받을 땐 어쨌든 맵 형태로 받아야 하는 것.
+axios({ params: {paramName: 'param contents'} })
+/
+axios({ url:'axios-test-1', params: {textVal: "hello world from sc"}, data: "This is data from sc vue", })
+이렇게 보내면 요청이 아래처럼 감
+http://localhost/epc/axios-test-1?textVal=hello+world+from+sc
+url?name1=val1&name2=val2&.....
+이렇게 가는데 당연히 변수명으로 안 받으면 어떻게 받음
+@RequestParam String fjiodsamfklds
+이렇게 해두면 클라이언트가 보내는 값들 중에 어떤 값을 뽑아다가
+컨트롤러에서 어떤 변수에 넣어줄지 어떻게 결정하라고.
+
+
+Parameter Name - textVal, Value - hello world from sc
+Parameter Name - This is data from sc vue, Value - 
+2022/04/28 10:06 INFO  (ShoppingCartVueController.java:168) - at1 > param
+2022/04/28 10:06 INFO  (ShoppingCartVueController.java:169) - hello world from sc
+
+
+//02 - @RequestParam Map
+axios({url: 'axios-test-2', params: {textVal: "hello world from sc"}, data: "This is data from sc vue"})
+위처럼 보냈고 아래처럼 받았음
+public int at2(@RequestParam Map<String, Object> paramMap)
+로그는 아래.
+대체적으로 똑같음.
+당연히 요청은 바꾼 게 없으니 똑같고.
+http://localhost/epc/axios-test-2?textVal=hello+world+from+sc
+컨트롤러에서 찍어 봤을 때 요청도 request 내용물도 똑같음
+Parameter Name - textVal, Value - hello world from sc
+Parameter Name - This is data from sc vue, Value - 
+다만 자료형만 조금 다름.
+2022/04/28 11:50 INFO  (ShoppingCartVueController.java:193) - at2 > param
+2022/04/28 11:50 INFO  (ShoppingCartVueController.java:194) - {textVal=hello world from sc, This is data from sc vue=}
+/
+Map으로 받을 때와 하나씩 자료형 지정해서 받을 때 차이
+파라미터를 여러 개 보낼 때가 가장 큰 차이를 보이겠지.
+예를 들어 아래처럼 파라미터를 여러 개 보낸다면?
+axios({ params: {key1: 'val1', key2:'val2', key3:'val3' ... } }) 
+Map이 아니라 개별로 받는다면, 아래처럼 값 하나하나 변수명 맞춰서 맵핑해줘야 함.
+public int at1(@RequestParam String key1, @RequestParam int key2, @RequestParam String key3 ....)
+만약에 Map으로 받는다면? 컨트롤러에서 아래처럼 받는 파라미터를 맵 하나만 선언해 주면 됨.
+public int at2(@RequestParam Map<String, Object> paramMap)
+대신 꺼내오는 과정이 하나 더 늘어날 뿐이지.
+String param1 = paramMap.get("key1");
+int param2 = paramMap.get("key2");
+String param3 = paramMap.get("key3");
+...
+Map으로 받을 때는 변수명이 상관이 없어지지.
+그냥 알아서 key:val 쌍으로 묶어서 있는 파라미터들 다 긁어다가 map에 넣어줌.
+(controller에서 map 을 여러 개 설정하면 어떻게 되지?)
+
+
+//한 가지는, params 속성에 담아서 보내든, data 속성에 담아서 보내든, key:val 쌍으로 묶어서 보내야 한다는 점.
+그냥 string 하나만 보내 봤더니, 그 string 값을 key값으로만 인식하고 값으로 인식을 못 함.
+
+
+
+//03 - @RequestBody String
+axios({ url:'axios-test-3', params: {textVal: "hello world from sc"}, data: "This is data from sc vue", })
+http://localhost/epc/axios-test-3?textVal=hello+world+from+sc
+요청은 바꾼 게 없으니 request 내용물도 똑같음
+Header Name - content-length, Value - 24
+Header Name - accept, Value - application/json, text/plain, */*
+Header Name - content-type, Value - application/x-www-form-urlencoded
+Parameter Name - textVal, Value - hello world from sc
+Parameter Name - This is data from sc vue, Value - 
+/
+근데 RequestBody로 받으니까 내용이 다름.
+public int at3(@RequestBody String textVal)
+parsing 안 해주고 url query를 그대로 들고 옴.
+/
+2022/04/28 12:10 INFO  (ShoppingCartVueController.java:219) - at3 > param
+2022/04/28 12:10 INFO  (ShoppingCartVueController.java:220) - textVal=hello+world+from+sc&This+is+data+from+sc+vue=
+
+
+//04 - @RequestBody Map
+axios({ url:'axios-test-4', params: {textVal: "hello world from sc"}, data: "This is data from sc vue", })
+http://localhost/epc/axios-test-4?textVal=hello+world+from+sc
+요청은 바꾼 게 없으니 request 내용물도 똑같음
+Header Name - content-length, Value - 24
+Header Name - accept, Value - application/json, text/plain, */*
+Header Name - content-type, Value - application/x-www-form-urlencoded
+Parameter Name - textVal, Value - hello world from sc
+Parameter Name - This is data from sc vue, Value - 
+/근데 
+RequestBody 로 받았더니 에러가 남.
+public int at4(@RequestBody String textVal)
+415 에러, (Unsupported Media Type)
+파라미터 자료형을 지원하지 않는다고.
+네가 요청할 때 보낸 파라미터가 뭔 자료형인지 모르겠다고.
+> 
+요청을 바꿔 보자.
+axios({url: 'axios-test-4', params: {textVal: "hello world from sc"}, data: {key1: "This is data from sc vue"} })
+http://localhost/epc/axios-test-4?textVal=hello+world+from+sc
+Header Name - content-length, Value - 35
+Header Name - accept, Value - application/json, text/plain, */*
+Header Name - content-type, Value - application/json
+Parameter Name - textVal, Value - hello world from sc
+2022/04/28 12:25 INFO  (ShoppingCartVueController.java:245) - at1 > param
+2022/04/28 12:25 INFO  (ShoppingCartVueController.java:246) - {key1=This is data from sc vue}
+data 속성에 어떤 값을 넣어주는지에 따라서 content-type이 저절로 바뀜.
+data: "This is data from sc vue" 였을 때는 application/x-www-form-urlencoded 
+data: {key1: "This is data from sc vue"} 였을 때는 application/json
+RequestBody인지 RequestParam인지에 따라서 content 타입이 바뀌나? / 아니 data 자료형에 다라 바뀜.
+
+
+//05 - @RequestBody DTO
+axios({url: 'axios-test-5', params: {searchKeyword: "hello world from sc", mfcomp: 'this is from vue'}, data: "This is salesType dat"})
+위처럼 보내고 아래처럼 받음
+public int at5(@RequestBody SearchParamDTO param) 
+badRequest 에러 뜸
+/
+axios({url: 'axios-test-5', params: {searchKeyword: "hello world from sc", mfcomp: 'this is from vue'}, data: {salesType: "This is salesType dat"} })
+위처럼 보냈고 요청 정보는 아래.
+http://localhost/epc/axios-test-5?searchKeyword=hello+world+from+sc&mfcomp=this+is+from+vue
+Accept: application/json, text/plain, */*
+Content-Length: 37
+Content-Type: application/json
+아래는 컨트롤러 로그
+Parameter Name - searchKeyword, Value - hello world from sc
+Parameter Name - mfcomp, Value - this is from vue
+2022/04/28 14:10 INFO  (ShoppingCartVueController.java:270) - at5 > param
+2022/04/28 14:10 INFO  (ShoppingCartVueController.java:271) - SearchParamDTO [searchKeyword=null, dateStart=null, dateEnd=null, loginID=null, salesType=This is salesType dat, mfcomp=null, keywordProductList=null, purID=0, startIndex=0, currentPage=0, pageBlockSize=0]
+params 로 보냈던 searchKeyword 키와 mfcomp 키는 인식하지 못했음.
+대신 data 로 보냈던 salesType 키는 값이 들어감
+DTO에서 setter를 알아서 찾아다가 자동으로 넣어줬음.
+
+//06 - @RequestParam DTO
+axios({url: 'axios-test-6', params: {searchKeyword: "hello world from sc", mfcomp: 'this is from vue'}, data: "This is salesType dat", method: 'POST' })
+위처럼 보냈고 아래는 받는 내용
+public int at6(@RequestParam SearchParamDTO param)
+http://localhost/epc/axios-test-6?searchKeyword=hello+world+from+sc&mfcomp=this+is+from+vue
+Accept: application/json, text/plain, */*
+Content-Length: 21
+Content-Type: application/x-www-form-urlencoded
+역시나 400에러. bad Request
+/
+수정했음
+axios({url: 'axios-test-6', params: {searchKeyword: "hello world from sc", mfcomp: 'this is from vue'}, data:  {salesType: "This is salesType dat"} })
+그래도 400에러. bad request
+왜냐하면 데이터 타입이 안 맞아서.
+내가 컨트롤러에서 (@RequestParam SearchParamDTO param ) 이라고 쓰면서,
+파라미터를 SearchParamDTO 타입으로 받겠다고 이미 못을 박아버림.
+근데 넘어오는 파라미터 쿼리는 key1:value1 이런 식으로 넘어오니까.
+안 맞아 버림
+
+
+
+//07 - @RequestBody String - 'Content-Type': 'text/plain' 지정
+axios({url: 'axios-test-3', params: "hello world from sc", data: "This is salesType dat", headers: {'Content-Type': 'text/plain'} })
+위처럼 보내고 아래처럼 받음.
+public int at3(@RequestBody String textVal)
+아래는 요청 정보
+http://localhost/epc/axios-test-3?0=hello+world+from+sc
+Accept: application/json, text/plain, */*
+Content-Length: 21
+Content-Type: text/plain
+Parameter Name - 0, Value - hello world from sc
+2022/04/28 15:37 INFO  (ShoppingCartVueController.java:219) - at3 > param
+2022/04/28 15:37 INFO  (ShoppingCartVueController.java:220) - This is salesType dat
+/
+key 값 없이 text만 보냈더니 받기는 받음.
+Content-Type: text/plain 설정이 없었다면 내가 보냈던 text값이 key로 지정되고 value를 못 받았을 텐데
+Content-Type을 지정해서 보내니까 key말고 value 로 한 짝에만 들어감.
+대신 key 값은 0이 들어감. 진짜 0이 아니고, DTO 에서도 없는 값에는 int 에 0이 들어감. 그런 느낌일 듯.
+param에서는 무조건 key: val이어야 하는 듯. url 자체가 그렇게 구성되는 거라.
+그런데 body 에서는 그렇지 않음.
+Content-Type: text/plain 이라고 지정했더니 body로 보낸 문자열 값을 textVal 이라는 변수에 알아서 찾아서 넣어 줌.
+@RequestBody 로 받겠다고 지정했을 때는 변수명 상관없이 알아서 찾아다가 넣어 줌.
+
+
+//08 - @RequestParam String - 'Content-Type': 'text/plain' 지정
+axios({url: 'axios-test-1', params: "hello world from sc", data: "This is salesType dat", headers: {'Content-Type': 'text/plain'} })
+위처럼 보내고 아래처럼 받음.
+public int at1(@RequestParam String textVal)
+아래는 요청 정보
+http://localhost/epc/axios-test-1?0=hello+world+from+sc
+Content-Type: text/plain
+Accept: application/json, text/plain, */*
+/
+결과는 400 Bad Request
+이유는 아마 변수명을 맞춰주지 않아서일 듯!
+나는 (@RequestParam String textVal) 이라고 textVal라는 키로 어떤 값이 넘어올 걸 기대하고 있었는데
+0: hello world from sc
+이렇게 넘어오니까
+
+
+//map 2개로 받으면 에러남.
+public int at7( @RequestBody Map<String, Object> paramMap1, @RequestBody Map<String, Object> paramMap2 )
+400 Bad Request
+
+//09 - 보낼 때 dto 로 보내면
+axios({url: 'axios-test-6', params: new SearchParamDTO(), data: new SearchParamDTO() })
+class SearchParamDTO {
+    constructor() {
+        this.searchKeyword = 'hello';
+        this.salesType = "big";
+        this.mfcomp = 'world';
+    }
+}
+위처럼 보내 봤음.
+혹시나 보내는 param이나 data의 클래스 이름을 controller에서 받을 때 자료형이랑 맞춰서 만들어 주면 받을 수 있을까 해서.
+결과는 400 에러. Bad Reqeust.
+요청 url 확인해 봤음.
+http://localhost/epc/axios-test-6?searchKeyword=hello&salesType=big&mfcomp=world
+내가 어떤 식으로 보내든 상관없이 param에 넣으면 url query로 넘어가 버림.
+그럼 이거 RequestParam에서 받으면 되겠네? 됨.
+public int at2(@RequestParam Map<String, Object> paramMap) 
+이렇게 받았더니 아래처럼 로그 출력.
+Parameter Name - searchKeyword, Value - hello
+Parameter Name - salesType, Value - big
+Parameter Name - mfcomp, Value - world
+
+//클라이언트에서 변수명이랑 서버에서 클래스명이랑 맞출 때
+axios({url: 'axios-test-2', params: {SearchParamDTO: {searchKeyword: 'hello', salesType: 'big', mfcomp: 'world'} }, data: {SearchParamDTO: {searchKeyword: 'hello', salesType: 'big', mfcomp: 'world'} }})
+위처럼 보내고 아래처럼 받음.
+public int at2(@RequestParam Map<String, Object> paramMap)
+http://localhost/epc/axios-test-2?SearchParamDTO=%7B%22searchKeyword%22:%22hello%22,%22salesType%22:%22big%22,%22mfcomp%22:%22world%22%7D
+위는 요청 url, 아래는 로그
+Parameter Name - SearchParamDTO, Value - {"searchKeyword":"hello","salesType":"big","mfcomp":"world"}
+2022/04/28 16:21 INFO  (ShoppingCartVueController.java:193) - at2 > param
+2022/04/28 16:21 INFO  (ShoppingCartVueController.java:194) - {SearchParamDTO={"searchKeyword":"hello","salesType":"big","mfcomp":"world"}}
+똑같은 조건으로 아래처럼 받아 봤는데 안 됨. 400 error Bad Request 
+public int at6(@RequestParam SearchParamDTO param)
+
+
+//10 - list with JSON (JSON in List)
+axios({url: 'axios-test-10', params: [{searchKeyword: 'hello', salesType: 'big'}, {mfcomp: 'world'}], headers: {'Content-Type': 'application/json'} })
+위처럼 보내고 아래처럼 받음.
+public int at10(@RequestParam Map<String, Map<String, Object>> testList1) 
+아래는 로그
+2022/04/28 18:08 INFO  (ShoppingCartVueController.java:390) - at10 > param1
+2022/04/28 18:08 INFO  (ShoppingCartVueController.java:391) - {0={"searchKeyword":"hello","salesType":"big"}, 1={"mfcomp":"world"}}
+/
+JavaScript에서는 리스트가 사실상 객체라고 했음.
+객체의 일종이라고 했음.
+{key1: val1, key2: val2, key3:val3 ... } 이런 객체인데 key 값이 숫자일 뿐.
+{0: val0, 1: val1, 2:val2 ... }
+그래서 리스트를 그대로 보내면 객체처럼 인식하게 되는 것.
+{0={key1:val1, key2:val2, key3:val3}, 1={key4:val4, key5:val5} 2= {key6: val6} ... }
+/
+그니까 애초에, SearchParamDTO 니, ShoppingCartItem이니,
+VO나 DTO나 이렇게 객체 하나를 클래스로 규정해서 생각하려는 것 자체가 틀에 박혀 있는 거임.
+벗어나야 함. 무슨 말이냐면,
+JSON 객체는 {key1:val1, key2:val2, key3: val3....} 단지 key와 val들이 쌍을 이루고 있는 집합에 불과함.
+key와 val들의 쌍들을 모아서 묶어놓은 것일 뿐임.
+그거를 Java에서는 어떻게 해서 Map으로 받거나, 어떻게 해서 List로 받거나, 어떻게 해서 DTO로 받거나,
+어떻게든 원하는 대로 받아 보려고 이렇게 저렇게 해 보는 것일 뿐임.
+JSON 객체는 기본적으로 Java에서는 Map이라고 볼 수 있음.
+애초에 param이 그렇게 이루어져 있음.
+axios({  params: {key1:val1, key2:val2 ..}  })
+이렇게 이루어져 있잖아. 
+이걸 서버에서 한 번에 받을 때 Map<String,Object> 해 버리면 그냥 알아서 모든 params을 다 넣어주잖아.
+왜냐하면 params 객체 전체가 하나의 Map이기 때문이야.
+params: { a... } 에서 params에 넣어주는 { a... } 이 객체 자체가 하나의 Map 객체라는 거야.
+그리고 그 객체 안에 key와 val들이 쌍을 이루어서 들어 있는 거고.
+DTO나 VO로 받는 거는 그냥 해당 객체로부터 setter 함수를 자동으로 불러다가 넣어주는 것일 뿐.
+클라이언트 단에서 뭔가 자료형을 지정해서 보내줬기 때문에 서버 단에서 DTO로 받을 수 있는 게 아니라고.
