@@ -73,6 +73,23 @@
             </template>
         </ul>
     </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+
+    <div id="app-5">
+        <p> below line doesn't trigger view render</p>
+        <p> input: app5.actor.weight = '72kg'; </p>
+        <p> below line triggers view render</p>
+        <p> input: Vue.set(app5.actor, 'birthday', '1963. 12. 18.'); </p>
+        <ul>
+            <li v-for="(val, key) in actor"> This actor's {{ key }} is {{ val }} </li>
+        </ul>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    
     <script>
 
         //v-for : iterating list / v-for : 리스트 반복하기
@@ -139,6 +156,10 @@
         // 단, 아래와 같은 경우는 데이터가 변하더라도 Vue 가 화면을 갱신하도록 만들지 못한다.
         // 인덱스로 배열에 있는 항목을 직접 설정하는 경우, 예: app1.fruitList[4]={fname:'blueberry', color:'purple'};
         // 배열 길이를 수정하는 경우, 예: vm.items.length = newLength
+        // 뷰를 갱신하도록 만들면서 데이터를 수정하려면 아래처럼 'set' 함수를 이용하면 된다.
+        // Vue.set(vm.items, indexOfItem, newValue) / vm.items.splice(newLength)
+        // ex) Vue.set(app3.testList, 2, {food: 'cheese', cost: 3000}) / app3.$set(app3.testList, 2, {food: 'cheese', cost: 3000})
+
         var app3 = new Vue({
             el: '#app-3',
             data: {
@@ -155,6 +176,25 @@
                 dialogueList: [{speaker:'Tom', line:'hello'}, {speaker:'Jerry', line:'world'}]
             }
         })
+
+        // 객체: 속성 추가 및 삭제 감지
+        // Vue에서는 이미 만들어진 객체에 속성을 반응형으로 추가하거나 삭제할 수 없다.
+        // 이미 객체를 만들고 난 뒤에 속성이 바뀌어도 뷰 갱신을 유발하지 못한다.
+        // 뷰 갱신을 유발하면서 속성을 변경하려면 set 함수를 써야 한다.
+        // Vue.set(vm.userProfile, 'age', 27) / vm.$set(vm.userProfile, 'age', 27)
+        // app5.actor.weight = '72kg';     /=>  doesn't trigger view render
+        // Vue.set(app5.actor, 'birthday', '1963. 12. 18.'); / app5.$set(app5.actor, 'birthday', '1963. 12. 18.'); /=>  triggers view render
+        var app5 = new Vue({
+            el: '#app-5',
+            data : {
+                actor : {
+                    firstName: 'Brad',
+                    lastNmae: 'Pitt',
+                    height: '180cm'
+                }
+            }
+        })
+
 
     </script>
 
