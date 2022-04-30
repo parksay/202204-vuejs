@@ -10,84 +10,121 @@
 </head>
 <body>
     <h1>hello big world!</h1>
-
-
+    <div>참고자료</div>
+    <div> https://kr.vuejs.org/v2/guide/index.html </div>
+    
+    <!-- < 동적으로 렌더링하기 > -->
     <div id="app">
         {{ message }}
     </div>
-    
-    <div></div>
+    <div>----------------------------------------------------<br></div> 
+    <!-- app.message = 'Hello Vue JS!' -->
 
-    <!-- app2.message = 'Hello New World!!' -->
+
+    <!-- app2.message = 'Hello Vue World!!' -->
     <div id="app-2">    
         <span v-bind:title="message">
             내 위에 잠시 마우스를 올리면 보입니다
         </span>
     </div>
+    <div>----------------------------------------------------<br></div> 
 
-    <!-- app3.seen = false -->
+    
+    <!-- < 조건에 따라 보이거나 보이지 않기 > -->
     <div id="app-3">
-        <p v-if="seen">이제 나를 볼 수 있어요</p>
+        <p v-if="seen">input: app3.seen = false; </p>
     </div>
+    <div>----------------------------------------------------<br></div> 
+    <!-- app3.seen = false -->
 
-    <div></div>
-
-    <!-- app4.todos.push({ text: 'New item' }) -->
+    <!-- < 반복문으로 요소 생성하기 > -->
     <div id="app-4">
         <ol>
             <li v-for="todo in todos">
-                {{ todo.text }}
+                {{ todo.todoItem }}
             </li>
         </ol>
     </div>
+    <div>----------------------------------------------------<br></div> 
+    <!-- app4.todos.push({ todoItem: 'New item' }); -->
 
 
-    <div></div>
-
+    <!-- < 이벤트 핸들링하기 > -->
     <div id="app-5">
         <p>{{ message }}</p>
         <button v-on:click="reverseMessage">메시지 뒤집기</button>
     </div>
+    <div>----------------------------------------------------<br></div> 
 
-    <div></div>
-
+    
+    <!-- < 사용자 입력값 양방향 바인딩하기 > -->
     <div id="app-6">
+        <div><p>text something below and </p></div>
+        <div><p>input: app6.message;</p></div>
         <p>{{ message }}</p>
         <input v-model="message">
     </div>
+    <div>----------------------------------------------------<br></div> 
+    <!-- app6.message; -->
 
+
+    
+    <!-- < 컴포넌트를 사용하여 작성하기 > -->
     <div id="app-7">
         <ol>
             <todo-item 
-                v-for="item in groceryList"
-                v-bind:todo="item"
-                v-bind:key="item.id"
+            v-for="item in groceryList"
+            v-bind:todo="item"
+            v-bind:key="item.id"
             >  </todo-item>
         </ol>
     </div>
+    <div>----------------------------------------------------<br></div> 
+    <!-- app7.groceryList.push({todoItem: "bread"}); -->
 
+
+    <!-- app8.fruitList.push({fName:"melon", color: "green"}); -->
     <div id="app-8">
         <fruit-item
             v-for="item in fruitList"
             v-bind:fruits="item"
         ></fruit-item>
     </div>
+    <div>----------------------------------------------------<br></div> 
+
 
     <script>
+        //< 동적으로 렌더링하기 >
+        //Vue 객체를 만들면서 파라미터로 객체를 하나 넣어줍니다. new Vuew( { ~~ });
+        //그 객체는 data 라는 속성이 있고, 다시 그 안에 객체 들어 있습니다. new Vue({ data: { ~~ } });
+        //이 data 안에 있는 값들을 속성으로 바로 접근하거나 넣어줄 수 있습니다.
+        //new Vue({data: { key: 'val' } }); 이렇게 있으면, app.key = 'new Val'; 
+        //값을 바꾸면 실시간으로 바뀝니다. 이 Vue 객체를 불러다 쓰고 있는 다른 부분들에서도 그 값이 한 번에 적용됩니다.
         var app = new Vue({
                 el: '#app',
                 data: {
-                    message: 'oh 종현 바보 우웩'
+                    message: 'input: app.message="this is changed message";'
                 }
             });
 
+        //이건 뭔지 모르겠..
         var app2 = new Vue({
             el:'#app-2',
             data: {
-                message:'hello' + new Date() + 'tiem now'
+                message:'hello' + new Date() + 'time now'
             }
         })
 
+        //< 조건에 따라 보이거나 보이지 않기 >
+        //app3에  Vue 객체를 넣어 둡니다.
+        //그 Vue 객체를 만들 때 파라미터로 객체를 하나 넣어줍니다.
+        //그 객체는 data 속성을 가지고 있고, 그 data 속성에 다시 객체를 하나 할당합니다.
+        //data 속성에 넣어 두었던 객체는 seen 이라는 key를 가지고 있고, value 는 boolean 자료형입니다.
+        //이 boolean 값을 참조해서 html 요소를 보이거나 보이지 않거나 만들 수 있습니다.
+        //태그 안에 v-if="seen" 형태로 태그 속성을 부여합니다. 예)  <input v-if="seen">
+        //Vue 객체의 data 속성 안에는 객체가 들어 있고, 그 객체의 key값들은 해당 Vue 객체를 담고 있는 변수의 속성 값으로 바로 접근 가능하다고 했습니다.
+        //app3.seen = false; / app3.seen = true; 이런 식으로 값을 바로 조정할 수 있습니다.
+        //이렇게 data 안의 seen 값이 true나 false로 바뀜에 따라서 if의 조건식 결과가 달라지고, 해당 v-if 속성을 가지는 태그가 보이거나 보이지 않거나 바뀝니다.
         var app3 = new Vue({
             el: '#app-3',
             data: {
@@ -95,17 +132,40 @@
             }
         })
 
+        // < 반복문으로 요소 생성하기 >
+        //app4 의 data 속성에는 todos 라는 key로 list를 들고 있습니다.
+        //이 list 안에서 요소들을 하나씩 꺼내서 태그를 반복 생성할 수 있습니다. 태그 안에 v-for 속성을 넣어주면 됩니다.
+        //예) <li v-for="todo in todos"> 
+        // app4 변수 안에 들어 있는 Vue 객체의 data 속성에서 todos 라는 key값을 가진 value를 참조하고, 
+        // 그 todos 라는 list 안에서 요소들을 하나씩 꺼내서 그 요소 하나에 todo 라는 이름을 붙이고,
+        // 반복문을 돌면서 태그를 생성합니다.
+        // app4.todos.push( ele );
+        //이렇게 해서 배열 안에 새로운 요소를 넣어주면 참조하고 있는 태그에도 곧바로 반영되어서 갱신됩니다.
+        //넣어주든 빼주든 새로 정의하든 변화가 일어나면 반복문 결과도 새로 갱신됩니다.
         var app4 = new Vue({
             el: '#app-4',
             data: {
                 todos: [
-                    { text: 'JavaScript 배우기' },
-                    { text: 'Vue 배우기' },
-                    { text: '무언가 멋진 것을 만들기' }
+                    { todoItem: 'JavaScript 배우기' },
+                    { todoItem: 'Vue 배우기' },
+                    { todoItem: '무언가 멋진 것을 만들기' },
+                    { todoItem: 'input: app4.todos.push({todoItem: "somethig new item"});'},
                 ]
             }
         })
 
+
+        //< 이벤트 핸들링하기 >
+        //지금까지 Vue 객체의 data 라는 속성에서 값을 참조하거나 활용하는 법을 배웠습니다.
+        //함수를 넣어두고 부를 수도 있습니다.
+        //methods 안에 함수를 정의합니다.
+        //methods 속성 안에 객체를 하나 넣어주면서, 그 객체 안에는 key 와 value 쌍이 있고, key에 함수 이름, value에 함수 내용을 넣어둡니다.
+        //마찬가지로 html 태그에서 바로 불러다 쓸 수 있습니다.
+        //예) <button v-on:click="reverseMessage"> 
+        //v-on 은 이벤트를 걸어주는 태그입니다. 어떤 이벤트를 걸어줄지는 콜론 ' : ' 뒤로 파라미터를 넣어줍니다. 
+        // 예) 클릭 이벤트면 v-on:click / 스크롤 이벤트면 v-on:scroll / submit 이벤트면 v-on:submit / keyUp 이면 v-on:keyup 등등
+        //click 이벤트를 걸려면 태그 안에 v-on을 먼저 써주고 콜론 뒤로 click 이라는 파라미터를 던져줍니다. v-on:click. 클릭할 때 어떤 함수를 실행할지 등호 ' = ' 안으로 지정해 줍니다. v-on:click="reverseMessage" 
+        //Vue 객체의 method 속성에서는 data 속성 안에 있는 값들을 참조할 수 있는데, this.key 형태로 참조하면 됩니다. data: { key1: 'value1' } 이면, methods: { fucn1: function() { this.key1 = 'hello'; }} 
         var app5 = new Vue({
             el: '#app-5',
             data: {
@@ -118,41 +178,73 @@
             }
         })
 
+
+        // < 사용자 입력값 양방향 바인딩하기 >
+        //지금까지는 Vue 객체 안에 있는 < 데이터 값 변경 => 화면 위로 반영 >  방향이었습니다. 
+        //태그 안에 v-model 속성을 넣어주면 반대로도 가능합니다. 즉, < 화면상에 입력되는 값 => Vue 객체의 data 값 변경 >
+        //예를 들어서 <input v-model="key1"> 이렇게 해두면 사용자가 이 input 태그 안에 값을 입력함에 따라서 key1 속성의 값이 변경될 것이고, 값이 변경됨에 따라서 그 값을 참조하고 있는 화면 안의 다른 요소들도 갱신이 바로바로 일어납니다.
         var app6 = new Vue({
             el: '#app-6',
             data: {
-                message: '안녕하세요 Vue!'
+                message: 'input: app6.message; '
             }
         })
 
 
+        // < 컴포넌트를 사용하여 작성하기 >
+        //여기서부터 약간 좀 복잡해 보일 수 있음. 데이터 흐름, 데이터 참조 관계만 잘 따라오면 어려울 건 없습니다.
+        //자주 쓰는 요소는 template 으로 정의해두고 여러 번 사용할 수 있습니다.
+        //template을 정의하는 방법은 아래와 같습니다.
+        //Vue객체에서 component()라는 함수를 실행하고, 그 안에 파라미터를 두 개 넣어줍니다.
+        //첫 번째 파라미터는 템플릿의 이름입니다. 값을 'temp1' 이렇게 넣어주면 나중에 불러다 쓸 때도 <temp1> </temp1> 이렇게 부르면 됩니다.
+        //두 번째 파라미터는 객체입니다. 객체 안에 여러 가지 옵션이나 설정을 지정할 수 있습니다.
+        //두 번째 파라미터로 넣어주는 객체는 key와 value들의 쌍으로 이루어져 있고, key는 기본적으로 props 속성과 template 속성이 있습니다.
+        //template 속성은 template 내용입니다. 나중에 <temp1> </temp1> 이렇게 태그 요소를 불렀을 때 그 내용을 무엇으로 채울지 알려줍니다.
+        //이 template 속성 안에서 단순히 하드코딩만 할 수 있다면 활용도가 떨어질 것입니다. 값이 static 하지 않고 dynamic 합니다. 그러려면 값을 어딘가에서 참조해 와야겠습니다. 그 참조할 값들을 props 속성에 넣어줍니다.
+        //props 속성에 리스트를 넣어줍니다. 이 리스트 안에는 key 값들이 들어갑니다. 나중에 태그를 만들 때 내가 넘겨주고 싶은 데이터를 이 key 값에 담아서 보내주면 됩니다.
+        //태그 안에서 어떻게 파라미터를 넘겨주는지 봅시다. 태그 안에 v-bind라는 속성을 넣어줍니다. 그리고 콜론 ' : ' 뒤로 key를 지정해주면 됩니다. 예) v-bind:key1 > key 에 담길 value 는 등호 ' = '뒤로 넣어줍니다. > v-vind:key1="val1" 
+        //아래를 보면 첫 번째 파라미터에서 todo-item 이라는 이름으로 템플릿을 만들었고, 두 번째 파라미터의 props 속성에서는 todo라는 key 값으로 파라미터를 넘겨줄 거라고 미리 알려줍니다. template에서는 그 key 값을 참조해서 template 내용물을 채웁니다.
+        //이 template을 사용할 때는 다음처럼 부르게 될 것입니다. 
+        // <todo-item v-bind:todo="param"> </todo-item>
+        //만약 이 템플릿을 list 요소를 참조해서 반복 생성하고 싶다면?  v-for 태그를 응용하면 됩니다.
+        //<todo-item  v-for="item in groceryList" v-bind:todo="item" v-bind:key="item.id">  </todo-item>
+        //위 문법을 천천히 보면, 우선 v-for 태그를 이용해서 반복문을 만듭니다.
+        //groceryList 리스트 안에서 요소를 하나씩 꺼내오고, 그 요소 하나를 item 이라고 부르기로 합니다. 이 item을 v-bind 태그를 통해서 파라미터로 넘겨줍니다. 넘겨줄 때 todo 라는 key 값에서 담아서 넘겨줍니다. v-bind:todo="item"
+        //Vue 객체의 data 속성에서 groceryList라는 list를 참조하고, list의 요소 하나를 꺼내와서 item이라는 변수에 담고, 이 item이라는 value를 todo라는 key에 담아서 component로 보냄. 
+        //component는 props 속성에서 미리 todo라는 key값으로 파라미터를 받으려고 준비 중이었습니다. 그럼 그 todo를 받아서 template 속성 안에서 참조해서 dynamic 하게 태그를 생성할 수 있습니다.
         Vue.component('todo-item', {
             props:['todo'],
-            template: '<li> {{ todo.text }} </li>'
-        })
-        Vue.component('fruit-item', {
-            props:['fruits'],
-            template: '<li> {{ fruits.fName }} is {{ fruits.color }} </li>'
+            template: '<li> {{ todo.todoItem }} </li>'
         })
 
         var app7 = new Vue({
             el: '#app-7',
             data: {
                 groceryList: [
-                { id: 0, text: 'Vegetables' },
-                { id: 1, text: 'Cheese' },
-                { id: 2, text: 'Whatever else humans are supposed to eat' }
+                { id: 0, todoItem: 'Vegetables' },
+                { id: 1, todoItem: 'Cheese' },
+                { id: 2, todoItem: 'input: app7.groceryList.push({todoItem: "bread"});' }
                 ]
             }
         })
 
+        //위랑 같은 내용입니다. 다시 한 번 data 넘겨주고 받는 흐름을 잘 따라가면서 이해해 봅시다.
+        //component 는 따로 미리 만들어 두었습니다.
+        //app8 에서는 자신이 가지고 있는 데이터들을 활용해서 미리 만들어 두었던 component에 파라미터를 넘겨주는 것입니다.
+        //그리고 app8이 가지고 있던 data들이 변경되면 그 값을 참조하고 있는 다른 요소들은 실시간으로 영향을 받습니다. component도 마찬가지로 변경됩니다.
+        Vue.component('fruit-item', {
+            props:['fruits'],
+            template: '<li> {{ fruits.fName }} is {{ fruits.color }} </li>'
+        })
 
         var app8 = new Vue({
             el: '#app-8',
             data: {
                 fruitList:[
                     {fName: 'apple', color:'red'},
-                    {fName: 'banana', color:'yellow'}
+                    {fName: 'banana', color:'yellow'},
+                    {fName: 'input', color:'app8.fruitList.push({fName:"melon", color: "green"});'},
+
                 ]
             }
         })
