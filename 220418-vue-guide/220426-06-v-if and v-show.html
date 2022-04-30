@@ -65,9 +65,20 @@
     </div>
     <div>----------------------------------------------------<br></div> 
 
-    <!-- // v-if 에서 랩퍼 역할을 하는 컴포넌트 템플릿  -->
+    <!-- // v-if 에서 랩퍼 역할을 하는 템플릿  -->
     <div id="app-3">
-        <ifwrapper v-bind:itemlist="fruitlist" v-if="trueOrFalse"></ifwrapper>
+        <p>input: app3.trueOrFalse = false;</p>
+        <template v-if="trueOrFalse">
+            <p>
+                I like {{ fruitItem.fname }}. 
+            </p>
+            <p>
+                Because I like {{ fruitItem.color }},
+            </p> 
+            <p>
+                and {{ fruitItem.fname }} is {{ fruitItem.color }}.
+            </p>
+        </template>
     </div>
     <div>----------------------------------------------------<br></div> 
 
@@ -161,18 +172,12 @@
             }
         });
 
-        // v-if 에서 랩퍼 역할을 하는 컴포넌트 템플릿 
-        //component 가 일종의 랩퍼 역할을 해서, 템플릿 태그에 v-if를 쓰면 그 전체가 v-if를 따라감.
-        // component 선언부를 app3 선언부 아래에 두면 에러가 남....
-        // [Vue warn]: Unknown custom element: <ifwrapper> - did you register the component correctly? For recursive components, make sure to provide the "name" option.
-        Vue.component('ifwrapper', {
-            props: ['itemlist'],
-            template: '<ul><li>{{ itemlist.fname }}</li><li>{{ itemlist.color }}</li></ul>'
-        });
+        // v-if 에서 랩퍼 역할을 하는 템플릿 
+        //template 태그가 일종의 랩퍼 역할을 해서, 템플릿 태그에 v-if를 쓰면 그 안에 있는 모든 요소들이 v-if의 결과값을 따라간다.
         const app3 = new Vue({
             el: 'div#app-3',
             data: {
-                fruitlist: {fname: 'apple', color: 'red'},
+                fruitItem: {fname: 'apple', color: 'red'},
                 trueOrFalse: true
             }
         });
