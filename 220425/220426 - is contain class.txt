@@ -14,10 +14,10 @@
 찾아보고 올리기
 
 > html 요소가 특정 class 를 포함하는지 확인하는 방법
-html 요소가 어떤 class 들을 가지고 있는지 보는 방법이 있다.
+어떤 html 요소의 class가 특정 class를 포함하고 있는지 확인하는 방법이 있다.
 ele.classList 에 접근하면 가지고 있는 class 이름들을 list 형태로 받아올 수 있다.
-classList 객체에서 특정한 클래스를 포함하는지 확인하는 함수는 contains() 이다.
 const cl = document.querySelector('input#keyword').classList;
+classList 객체에서 특정한 클래스를 포함하는지 확인하는 함수는 contains() 이다.
 console.log(cl.contains('inputTxt'));
 const isContain = document.querySelector('input#keyword').classList.contains('yourClassName');
 

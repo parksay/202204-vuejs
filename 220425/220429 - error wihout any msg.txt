@@ -1,0 +1,65 @@
+콘솔 창에 어떤 에러도 뜨지 않으면서 렌더링도 되지 않을 때
+                                        <tbody id="orderDetailMain">
+                                            <tr v-for="item in orderDetailList">
+                                                <td> 
+                                                    <span v-if="item.returnYN == 'Y'">
+                                                        <input type="checkbox" name="isRefund" id="isRefund">
+                                                    </span>
+                                                    <span v-else-if="{item.returnYN == 'N'}">
+                                                        <input type="button" name="cancelRefund" class="cancelRefund" value="반품 취소">
+                                                    </span>
+                                                </td>
+                                                <td> 
+                                                    <span v-if="item.returnYN == 'Y'">
+                                                        {{ item.return_cnt }} 
+                                                    </span>
+                                                    <span v-else-if="item.returnYN == 'N'">
+                                                        <input type="number" name="refund_cnt" class="refund_cnt" id="refund_cnt" value="${item.pur_cnt}" min="1" max="${item.pur_cnt}">
+                                                    </span>
+                                                </td>
+                                                <td> {{ item.pur_cnt }} </td>
+                                                <td> {{ item.pur_id }} </td>
+                                                <td> {{ item.sales_type }} </td>
+                                                <td> {{ item.model_nm }} </td>
+                                                <td> {{ item.mfcomp }} </td>
+                                                <td> {{ item.price }} </td>
+                                                <td> {{ item.total }} </td>
+                                            </tr>
+                                        </tbody>
+
+                                        const tbodyOrderDetail = new Vue({
+                                            el: 'tbody#orderDetailMain',
+                                            data: {
+                                                orderDetailList: [{}]
+                                            }, 
+                                            methods: {
+                        
+                                            }
+                                        })
+
+                                        tbodyOrderDetail.orderDetailList = 
+                    [{pur_id: 132, purinf_id: 154, sales_type: 'ups', model_nm: 'SM-IMMN504', mfcomp: '삼성전자', price: 1240000, pur_cnt: 6, total: 7440000, returnYN: 'N', return_cnt: null, rfinfo_id: null},
+                    {pur_id: 132, purinf_id: 155, sales_type: 'gpu', model_nm: '테스트4', mfcomp: 'fct4', price: 423456, pur_cnt: 5, total: 2117280, returnYN: 'N', return_cnt: null, rfinfo_id: null},
+                    {pur_id: 132, purinf_id: 156, sales_type: 'mouse', model_nm: '테스트7', mfcomp: 'fct7', price: 723756, pur_cnt: 8, total: 5790048, returnYN: 'N', return_cnt: null, rfinfo_id: null},
+                    {pur_id: 132, purinf_id: 157, sales_type: 'monitor', model_nm: '테스트4', mfcomp: 'fct4', price: 423456, pur_cnt: 10, total: 4234560, returnYN: 'N', return_cnt: null, rfinfo_id: null}];
+                
+
+                    위에서 tbody 를 정의해 두었다.
+                    밑에서 tbody 를 Vue에 걸어 주었다.
+                    Vue 안에 data 속성으로 list 도 넣어 주었다.
+                    tr은 커녕 tbody 조차 나오지 않았다.
+                    v-if 태그를 썼나? 
+                    아니었다.
+                    id도 확실하게 복붙했고, v-for반복문을 돌릴 list에도 확실하게 데이터를 넣어 주었다.
+                    출력이 되어야 하는데 아예 렌더링조차 되지 않았다.
+                    에러인가?
+                    콘솔 창을 봤지만 아무런 에러 메세지도 출력되지 않았다.
+                    어찌된 일일까?
+                    일단, 결론부터 말하자면 에러가 맞다.
+                    Vue에서 잡아내지 못했을 뿐이다.
+                    문법을 틀리게 써서 렌더링에 실패한 듯하다.
+                    원래 jQuery로 짰던 페이지를 Vue로 수정하는 중이었는데,
+                    아래와 같이 복붙을 잘못한 부분들이 있다.
+                    <span v-else-if="{item.returnYN == 'N'}">
+                    <input type="number" name="refund_cnt" class="refund_cnt" id="refund_cnt" value="${item.pur_cnt}" min="1" max="${item.pur_cnt}">
+                    어떠한 에러 메세지도 뜨지 않으면서 렌더링조차 되지 않는다면 괄호나 태그 등의 에러를 의심해 보자.
