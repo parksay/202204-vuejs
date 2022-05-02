@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <!-- //iterating list -->
+    <div id="app-1">
+        <h2> {{ sectionTitle }} </h2>
+        <p>input : app1.fruitList.push({fname:'blueberry', color:'purple'});</p>
+        <ol>
+            <li v-for="item in fruitList"> {{ item.fname }} is {{ item.color }}</li>
+        </ol>
+        <ol>
+            <li v-for="(item, index) in fruitList"> {{ index+1 }}th item => {{ item.fname }} is {{ item.color }}</li>
+        </ol>
+        <ol>
+            <li v-for="item of fruitList"> {{ item.fname }} is {{ item.color }}</li>
+        </ol>
+        <ol>
+            <li v-for="(item, index) of fruitList"> {{ index+1 }}th item => {{ item.fname }} is {{ item.color }}</li>
+        </ol>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    //v-for : iterating list / v-for : 리스트 반복하기
+    //v-for 디렉티브를 이용하면 리스트를 forEach 처럼 반복문을 돌릴 수 있다
+    //<li v-for="item in fruitList">
+    //item은 리스트 안에서 꺼내 오는 요소 하나하나들에 붙여주는 별칭이고, fruitList는 반복문을 돌릴 리스트 이름이다
+    //반복문을 돌리는 변수명은 Vue 객체 안의 data 속성에서 불러올 수 있다.
+    //반복문 안에서도 상위 속성에 모두 접근할 수 있다.
+    //v-for 디렉티브 안에서 파라미터를 하나 더 받을 수 있는데, 반복문의 해당 index를 받아올 수있다.
+    //<li v-for="(item, index) in fruitList"> 
+    //반복문 안에서 변수명처럼 쓸 수 있다.
+    // 한 가지, v-for 디렉티브 안에서 in 대신 of를 쓸 수 있다.
+    //<li v-for="item in fruitList"> // 아래와 같음
+    //<li v-for="item of fruitList">    //위와 같음
+    //<li v-for="(item, index) in fruitList">  //아래와 같음
+    //<li v-for="(item, index) of fruitList">   //위와 같음
+    var app1 = new Vue({
+        el: '#app-1',
+        data: {
+            sectionTitle: 'this is fruit and color list',
+            fruitList: [{fname:'apple',  color:'red'},
+                    {fname:'orange',  color:'orange'},
+                    {fname:'banana',  color:'yellow' },
+                    {fname:'melon',  color:'green'}]
+        },
+    });
+
+
+    <!-- //v-for : iterating object  -->
+    <!-- // v-for: 객체 속성 반복하기  -->
+    <div id="app-2">
+        <p> input: app2.person = { firstName: 'Tom', lastName: 'Cruise', height: '170cm', birthday: '1962. 7. 3.', career: 'actor' } </p>
+        <ul>
+            <li v-for="val in person"> {{ val }} </li>
+        </ul>
+        <ul>
+            <li v-for="(val, key) in person"> This person's {{ key }} is : {{ val }}</li>
+        </ul>
+        <div>
+            <p v-for="(val, key, index) in person"> num {{ index }}: The {{ key }} of him is {{ val }} </p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // v-for : iterating object / v-for: 객체 속성 반복하기
+    // v-for 디렉티브는 객체를 바탕으로 반복문을 만들 수도 있다.
+    // 객체를 바탕으로 반복문을 만들 때는 최대 세 개까지 파라미터를 받을 수 있다.
+    // 첫 번째 파라미터는 속성의 값이다.
+    // <li v-for="val in obj">  / 
+    // obj라는 객체가 가지고 있는 속성들의 값들을 하나씩 꺼내와서 val 변수에 넣어준다.
+    // 두 번째 파라미터는 속성의 이름이다.
+    // <li v-for="(val, key) in obj">  / 
+    // obj라는 객체가 가지고 있는 속성들을 하나씩 꺼내와서 그 속성의 이름은 key 변수에 넣어주고 그 속성의 값은 val 변수에 넣어준다.
+    // 세 번째 파라미터는 반복문의 인덱스이다.
+    // <li v-for="(val, key, index) in obj">  / 
+    // 객체의 속성 이름과 속성 값을 짝지어서 각각 key와 val 변수에 넣어주는 것은 똑같고, 추가로 반복문의 순서를 index 변수에 넣어준다.
+    var app2 = new Vue({
+        el: '#app-2',
+        data: {
+            person: {
+                firstName: 'Tom',
+                lastName: 'Cruise',
+                height: '170cm',
+                birthday: '1962. 7. 3.'
+                
+            }
+        }
+    });
+
+
+
+    <!-- // 배열: 변이 메소드 / Mutation Methods -->
+    <div id="app-3">
+        <p> below command doesn't trigger view render</p>
+        <p> input: app3.testList[2] = {food: 'cheese', cost: 3000}; </p>
+        <p> below command triggers view render</p>
+        <p> input: app3.testList.push({food: 'snack', cost: 2000}); </p>
+        <ul>
+            <li v-for="item in testList"> You can buy {{ item.cost }} with {{ item.cost }}</li>
+        </ul>
+        <br>
+        <p> below command doesn't trigger view render</p>
+        <p> input: app3.testObj.smoothie = 5000; </p>
+        <p> below command triggers view render</p>
+        <p> input: Vue.set(app3.testObj, 'tea', 3500); </p>
+        <ul>
+            <li v-for="(val, key) in testObj"> You can order {{ key }} with {{ val }}</li>
+        </ul>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 배열: 변이 메소드 / Mutation Methods
+    // 아래 메소드들은 감시 중인 배열의 변이를 감지하여 뷰를 갱신한다.
+    // push()  /pop() /shift() / unshift() / splice() / sort() / reverse()
+    // 배열: 대체 메소드 / Replacing Mehods
+    // 아래 메소드들은 원본 배열을 변형하지 않고 새 배열을 반환합니다. 이전 배열을 새 배열로 바꾼다.
+    // filter() / concat() / slice() / 
+    // eX) example1.items = example1.items.filter(function (item) {  return item.message.match(/Foo/); })
+    // app1.fruitList = app1.fruitList.filter(function(item){ return item.fname.includes('an'); });
+    // app1.fruitList 안에 있는 요소들 중에서 fname 속성의 값이 'an'을 포함하는 요소들로만 새 배열을 만들어서 반환한다. //ex: banana / orange 
+    // 단, 아래와 같은 경우는 데이터가 변하더라도 Vue 가 화면을 갱신하도록 만들지 못한다.
+    // 인덱스로 배열에 있는 항목을 직접 설정하는 경우, 예: app1.fruitList[4]={fname:'blueberry', color:'purple'};
+    // 배열 길이를 수정하는 경우, 예: vm.items.length = newLength
+    // 뷰를 갱신하도록 만들면서 데이터를 수정하려면 아래처럼 'set' 함수를 이용하면 된다.
+    // Vue.set(vm.items, indexOfItem, newValue) / vm.items.splice(newLength)
+    // ex) Vue.set(app3.testList, 2, {food: 'cheese', cost: 3000}) / app3.$set(app3.testList, 2, {food: 'cheese', cost: 3000})
+    var app3 = new Vue({
+        el: '#app-3',
+        data: {
+            testList: [{food: 'bread', cost: 1000}, {food: 'milk', cost: 1500}],
+            testObj: {americano: 4000, latte: 4500, cappuccino: 4500}
+        }
+    });
+
+
+    
+    <!-- // 랩퍼 역할을 하는 template 과 v-for 조합 -->
+    <div id="app-4">
+        <ul>
+            <template v-for="item in dialogueList"> 
+                <li> {{ item.speaker }} said </li>
+                <li> {{ item.line }} in the film </li>
+            </template>
+        </ul>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 랩퍼 역할을 하는 template 과 v-for 조합
+    // 여러 요소들을 블럭으로 묶어서 한번에 적용 가능하다.
+    var app4 = new Vue({
+        el: '#app-4',
+        data: {
+            dialogueList: [{speaker:'Tom', line:'hello'}, {speaker:'Jerry', line:'world'}]
+        }
+    })
+
+    <!-- 객체의 속성을 추가 및 삭제 감지하기 -->
+    <div id="app-5">
+        <p> below line doesn't trigger view render</p>
+        <p> input: app5.actor.weight = '72kg'; </p>
+        <p> below line triggers view render</p>
+        <p> input: Vue.set(app5.actor, 'birthday', '1963. 12. 18.'); </p>
+        <ul>
+            <li v-for="(val, key) in actor"> This actor's {{ key }} is {{ val }} </li>
+        </ul>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 객체의 속성을 추가 및 삭제 감지하기
+    // Vue에서는 이미 만들어진 객체에 속성을 반응형으로 추가하거나 삭제할 수 없다.
+    // 이미 객체를 만들고 난 뒤에 속성이 바뀌어도 뷰 갱신을 유발하지 못한다.
+    // 뷰 갱신을 유발하면서 속성을 변경하려면 set 함수를 써야 한다.
+    // Vue.set(vm.userProfile, 'age', 27) / vm.$set(vm.userProfile, 'age', 27)
+    // app5.actor.weight = '72kg';     /=>  doesn't trigger view render
+    // Vue.set(app5.actor, 'birthday', '1963. 12. 18.'); / app5.$set(app5.actor, 'birthday', '1963. 12. 18.'); /=>  triggers view render
+    var app5 = new Vue({
+        el: '#app-5',
+        data : {
+            actor : {
+                firstName: 'Brad',
+                lastNmae: 'Pitt',
+                height: '180cm'
+            }
+        }
+    })
+
+    
+    <script>
+    </script>
+
+</body>
+</html>

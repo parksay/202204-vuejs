@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    // v-on 디렉티브
+    // v-on 디렉티브를 사용하면 이벤트를 걸어 두고 해당 트리거가 일어나면 지정해 둔 JavaScript를 실행할 수 있습니다.
+    // v-on 디렉티브 뒤에 콜론 ':' 을 붙여서 Vue에 파라미터를 전달할 수 있습니다.
+    // 해당 파라미터로 클릭 이벤트인지, 키 이벤트인지, 등등 이벤트 종류를 설정할 수 있습니다.
+    // 등호 '=' 뒤에 실행할 JavaScript나 메소드를 지정하면 됩니다.
+    
+
+    <!-- 이벤트 함수에 간단한 자바스크립트 표현식 넣기 -->
+    <!-- // 01 - JavaScript handler -->
+    <div id="app-1">
+        <div>
+            <button v-on:click="counter += 1"> add 1</button>
+        </div>
+        <p>위 버튼을 클릭한 횟수는 {{ counter }}번 입니다.</p>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 01 - JavaScript handler
+    // v-on 디렉티브에 값으로 JavaScript 표현식을 사용할 수 있습니다.
+    // 등호 '=' 뒤에 오는 값에는 Vue 객체의 data 속성에 접근할 수 있습니다.
+    var app1 = new Vue({
+        el: '#app-1',
+        data: {
+            counter: 0
+        }
+    });
+
+
+
+    <!-- 이벤트 핸들러에 메소드 이름 넣기 -->
+    <!-- // 02 - method handler -->
+    <div id="app-2">
+        <div>
+            <button v-on:click="alertCounter"> print counter</button>
+        </div>
+        <p>위 버튼을 클릭하면 몇 회 클릭했는지 알 수 있습니다.</p>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 02 - method handler
+    // 로직이 복잡해질수록 이벤트 핸들러에 JavaScript를 직접 넣는 것은 어려워집니다.
+    // v-on 디렉티브에 값으로 메소드 이름을 전달할 수 있습니다.
+    // 메소드는 JavaScript를 이용해서 호출할 수도 있습니다.
+    // app2.alertCounter();
+    var app2 = new Vue({
+        el: '#app-2',
+        data: {
+            counter: 0
+        },
+        methods: {
+            alertCounter: function() {
+                this.counter += 1;  
+                alert(this.counter);
+            }
+        }
+    });
+
+
+
+    <!-- 이벤트 핸들러에 인라인 메소드 넣기 -->
+    <!-- // 03 - inline method handler  -->
+    <div id="app-3">
+        <div>
+            <button v-on:click="alertMsg('this is msg from button')"> print msg</button>
+        </div>
+        <p>위 버튼을 클릭하면 몇 회 메세지가 출력됩니다.</p>
+        <div>
+            <button v-on:click="alertMsg('hello vue world')"> print hello</button>
+        </div>
+        <p>위 버튼을 클릭하면 몇 회 메세지가 출력됩니다.</p>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 03 - inline method handler 
+    // v-on 디렉티브에 값으로 메소드 이름을 전달해주는 대신 인라인 JavaScript 구문으로 메소드를 실행할 수도 있습니다.
+    // 파라미터를 다르게 하여 메소드를 동적으로 실행할 수 있습니다.
+    // 같은 메소드를 실행하더라도 다른 동작을 수행하도록 만들 수 있습니다.
+    var app3 = new Vue({
+        el: '#app-3',
+        methods: {
+            alertMsg: function(msg) {
+                alert(msg);
+            }
+        }
+    });
+
+
+
+    <!-- 이벤트 핸들러로 파라미터 주고받기 -->
+    <!-- // 04 - method parameter -->
+    <div id="app-4">
+        <div>
+            <button v-on:click="checkParam"> get auto param </button>
+        </div>
+        <p>위 버튼을 클릭하면 자동으로 넣어주는 파라미터를 확입니다.</p>
+        <div>
+            <button v-on:click="checkAllParams"> get auto param all </button>
+        </div>
+        <p>위 버튼을 클릭하면 자동으로 넣어주는 모든 파라미터를 확인합니다. </p>
+        <div>
+            <button v-on:click="checkParam(this.event)"> get event obj </button>
+        </div>
+        <p>위 버튼을 클릭하면 this.event 파라미터를 넘겨 줍니다. </p>
+        <div>
+            <button v-on:click="checkParam($event)"> get event obj2 </button>
+        </div>
+        <p>위 버튼을 클릭하면 $event 파라미터를 넘겨줍니다. </p>
+        <div>
+            <button v-on:click="checkParam(e)"> get event obj2 </button>
+        </div>
+        <p>위 버튼을 클릭하면 자동으로 넣어주는 모든 파라미터를 확인합니다. </p>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 04 - method parameter
+    // v-on 디렉티브에 함수 이름만 전달할 경우, 그 함수를 실행할 때 자동으로 파라미터를 넣어줍니다.
+    // evnet 객체를 자동으로 넘겨줍니다.
+    // 자동으로 넣어주는 파라미터는 evnet 객체 하나뿐입니다. 그 뒤로 더 파라미터를 받더라도 undefined 입니다.
+    // 이벤트 객체를 받는 방법은 여러 가지가 있습니다. 
+    // 첫째는 디렉티브 값에 메소드의 이름만 전달하여 자동으로 넣어주는 이벤트 객체를 파라미터로 받는 방법입니다.
+    // 둘째는 디렉티브 값에서 이벤트 객체를 파라미터로 직접 넣어주는 방법입니다. this.event를 넘겨주거나, $event 를 넘겨줍니다.
+    var app4 = new Vue({
+        el: '#app-4',
+        methods: {
+            checkParam: function(param) {
+                console.log('param');
+                console.log(param);
+            },
+            checkAllParams: function(a, b, c, d, e) {
+                console.log('a');
+                console.log(a);
+                console.log('b');
+                console.log(b);
+                console.log('c');
+                console.log(c);
+                console.log('d');
+                console.log(d);
+                console.log('e');
+                console.log(e);
+            },
+        }
+    });
+
+
+
+    <!-- 이벤트 수식어 -->
+    <!-- // 05 - evnet postfix -->
+    <div id="app-5">
+        <div>
+            <a href="?welcome=to&vue=world" v-on:click="checkUrl">click here and check the url: it moves</a>
+        </div>
+        <div>
+            <a href="?welcome=to&vue=world" v-on:click.prevent="checkUrl">click here and check the url: it stops</a>
+        </div>
+        <div>
+            <a href="?welcome=to&vue=world" v-on:click="stopUrl">click here and check the url: it stops</a>
+        </div>
+    </div> 
+    <div>----------------------------------------------------<br></div> 
+    // 05 - evnet postfix
+    // v-on 디렉티브에 '.' 뒤로 접미사를 붙여서 수식어를 적용할 수 있습니다.
+    // 이벤트 핸들러 안에서 event.preventDefault() 또는 event.stopPropagation()를 호출하는 일은 자주 있습니다.
+    // 이벤트 핸들러 안에서는 데이터를 처리하는 로직만 들어 있다면 더 좋을 것입니다.
+    // 따라서 Vue에서는 event를 조작하는 기능을 v-on 디렉티브 자체에 추가할 수 있도록 해 두었습니다.
+    // ex) v-on:click.stop  /=> event.preventDefault() 를 수행하는 것과 같은 기능입니다.
+    // 수식어는 여러 개를 붙일 수도 있습니다. 단, 순서에도 영향을 받으니 주의하세요.
+    // ex) v-on:click.prevent.self /=> 모든 클릭을 막음 
+    // ex) v-on:click.self.prevent /=> 엘리먼트 자체의 클릭만 막음
+    // 수식어 종류 / => .stop / .prevent / .capture / .self / .once / .passive / .once / .passive 
+    var app5 = new Vue({
+        el: '#app-5',
+        methods: {
+            checkUrl: function(param) {
+                console.log('param');
+                console.log(param);
+            },
+            stopUrl: function(e) {
+                e.preventDefault();
+                console.log('e');
+                console.log(e);
+            }
+        }
+    });
+
+
+    <!-- 키보드 이벤트 수식어 -->
+    <!-- // 06 - keyboard event postfix -->
+    <div id="app-6">
+        <div>
+            <input type="text" v-on:keydown.enter="enterEvent" placeholder="press enter key to check event handler">
+        </div>
+        <div>
+            <input type="text" v-on:keydown.tab="event4Tab" placeholder="press tab key to check event handler">
+        </div>
+        <div>
+            <input type="text" v-on:keydown.esc="escKey" placeholder="press esc key to check event handler">
+        </div>
+        <div>
+            <input type="text" v-on:keydown.delete="keys4delete" placeholder="press delete key or backspace key to check event handler">
+        </div>
+        <div>
+            <input type="text" v-on:keydown.delete="keys4delete" v-on:keydown.tab="event4Tab"  v-on:keydown.esc="escKey" placeholder="you can set multiple event handlers in one tag">
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 06 - keyboard event postfix
+    // v-on 디렉티브에서 수식어로 키 이벤트를 지정할 수 있습니다.
+    // 한 요소 안에 v-on 디렉티브를 여러 번 사용하여 키마다 다른 이벤트를 적용할 수 있습니다.
+    // 키 이벤트 수식어 종류: .enter / .tab / .esc / .space / .up / .down / .left / .right / .delete (“Delete” 와 “Backspace” 키 모두를 캡처합니다)
+    // 시스템 키 이벤트 수식어 종류: .ctrl / .alt / .shift / .meta
+    var app6 = new Vue({
+        el: '#app-6',
+        methods: {
+            enterEvent: function() {
+                if(confirm('Do you want to submit this form?')) {
+                    alert('succeeded');
+                } else {
+                    alert('canceled');
+                }
+            },
+            event4Tab: function(){ 
+                alert('you press tab key');
+            },
+            escKey: function() {
+                alert('this event is useful for closing modal or something')
+            },
+            keys4delete: function() {
+                alert('this event is on backspace key and delete key')
+            }
+        }
+    });
+
+
+    <!-- 마우스 이벤트 수식어 -->
+    <!-- // 07 - mouse event postfix -->
+    <div id="app-7">
+        <div v-on:click.left="event4left">
+            click here with left button
+        </div>
+        <div v-on:click.right="event4right">
+            click here with right button
+        </div>
+        <div v-on:click.middle="event4middle">
+            click here with middle button
+        </div>
+    </div>
+    // 07 - mouse event postfix
+    // v-on 디렉티브에 수식어로 마우스 이벤트를 지정할 수도 있습니다.
+    // 마우스 이벤트 종류: / .left / .right / .middle
+    var app7 = new Vue({
+        el: '#app-7',
+        data: {
+            msg4left: 'you just clicked with left button',
+            msg4right: 'you cannot use mouse right button',
+            msg4middle: 'this is a msg for middle button',
+        },
+        methods: {
+            event4right: function() {
+                alert(this.msg4right);
+            }, 
+            event4left: function() {
+                alert(this.msg4left);
+
+            }, 
+            event4middle: function() {
+                alert(this.msg4middle);
+            }
+        }
+    });
+
+    <script>
+    </script>
+</body>
+</html>

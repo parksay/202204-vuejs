@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <title>Document</title>
+</head>
+<body>
+    <h1>hello Vue World!</h1>
+
+    <!-- 데이터 바인딩하기 -->
+    <div id="app1">
+        <p>
+            input: param.a;
+        </p>
+        <p>
+            input:vm.a === param.a;
+        </p>
+        <p>
+            input: vm.a = 2;    // 인스턴스에 있는 속성값을 변경하면 원본 데이터에도 영향을 미칩니다.
+        </p>
+        <p>
+            input: param.a;     // => 2
+        </p>
+        <p>
+            input: param.a = 3; // ... 반대로 마찬가지입니다.
+        </p>
+        <p>
+            input: vm.a;        // => 3
+        </p>
+        <p>
+            input: vm.b = 'hi'; //나중에 추가하는 값은 변경되어도 갱신되지 않습니다.
+        </p>
+        <p>
+            input: param.b;     //=> undefined
+        </p>
+        <p>
+            input: param.c = 'hey';     //반대로도 마찬가지로 갱신되지 않습니다. 
+        </p>
+        <p>
+            input: vm.c;        //=> undefined      //나중에 추가해야 할 값이 있다면 공백 형태로라도 미리 선언해 두어야 합니다.
+        </p>
+        <p> {{ foo1 }} </p>
+        <button v-on:click="foo1='baz1'">change</button>
+    </div>
+    // 데이터 객체
+    var param = { a: 1 }
+
+    // Vue인스턴스에 데이터 객체를 추가합니다.
+    var vm = new Vue({
+        data: param
+    })
+
+    //try console log
+    // 인스턴스에 있는 속성은 원본 데이터에 있는 값을 반환합니다.
+    vm.a === param.a // => true
+    console.log('vm.a === param.a');// => true
+    console.log(vm.a === param.a);// => true
+
+
+    // 인스턴스에 있는 속성값을 변경하면 원본 데이터에도 영향을 미칩니다.
+    vm.a = 2;
+    param.a; // => 2
+    console.log('param.a' );    // => 2
+    console.log(param.a );  // => 2
+
+    // ... 반대로 마찬가지입니다.
+    param.a = 3;
+    vm.a // => 3
+    console.log('vm.a');    // => 3
+    console.log(vm.a);  // => 3
+    
+    //나중에 추가하는 값은 변경되어도 갱신되지 않습니다.
+    vm.b = 'hi';
+    console.log('param.b')  //=> undefined
+    console.log(param.b)    //=> undefined
+    //반대로도 마찬가지로 갱신되지 않습니다.    
+    param.c = 'hey';  
+    console.log('vm.c'); //=> undefined
+    console.log(vm.c);   //=> undefined
+    //나중에 추가해야 할 값이 있다면 공백 형태로라도 미리 선언해 두어야 합니다.
+
+    // 원래는 이렇게 버튼을 누르면 값이 수정돼야 하는데 (위 div#app1 참조)
+    var tval1 = {foo1:'bar1'};
+    var app1 = new Vue({
+        el: '#app1',
+        data: tval1
+    });
+
+
+    <!-- 데이터가 수정되더라도 렌더링은 고정하기 -->
+    <div id="app2">
+        <p> {{ foo2 }} </p>
+        <button v-on:click="foo2='baz2'">change2</button>
+    </div>
+    // 유일한 예외는 Object.freeze()를 사용하는 경우입니다.
+    // 변수를 수정해도 반영되지 않습니다.
+    var tval2 = {foo2:'bar2'};
+    Object.freeze(tval2)
+    var app2 = new Vue({
+        el: '#app2',
+        data: tval2
+    });
+
+    new Vue({
+        data: {
+            a: 1
+        },
+        beforeCreate() {
+            // 이 함수는 객체가 초기화된 직후에 실행됩니다. 
+            //값들이 들어가기도 전이므로 undefined 가 출력되는 걸 알 수 있습니다.
+            console.log('a is: ' + this.a); //=> a is: undefined
+            
+        },
+        created: function () {
+            //객체가 초기화되고 난 바로 뒤에 실행됩니다.
+            // 값들이 들어가 있으므로 data 속성의 a 값이 출력되는 것을 알 수 있습니다.
+            // 아래에서 `this` 는 vm 변수 안에 들어 있는 Vue 인스턴스를 가리킵니다.
+            console.log('a is: ' + this.a); // => "a is: 1"
+        }
+    })
+
+    
+    <script>
+        //<<<<<<<<<<<<<<<<<<<< responsive data binding
+        // 데이터 객체
+        var param = { a: 1 }
+
+        // Vue인스턴스에 데이터 객체를 추가합니다.
+        var vm = new Vue({
+            data: param
+        })
+
+        //try console log
+        // 인스턴스에 있는 속성은 원본 데이터에 있는 값을 반환합니다.
+        vm.a === param.a // => true
+        console.log('vm.a === param.a');// => true
+        console.log(vm.a === param.a);// => true
+
+
+        // 인스턴스에 있는 속성값을 변경하면 원본 데이터에도 영향을 미칩니다.
+        vm.a = 2;
+        param.a; // => 2
+        console.log('param.a' );    // => 2
+        console.log(param.a );  // => 2
+
+        // ... 반대로 마찬가지입니다.
+        param.a = 3;
+        vm.a // => 3
+        console.log('vm.a');    // => 3
+        console.log(vm.a);  // => 3
+        
+        //나중에 추가하는 값은 변경되어도 갱신되지 않습니다.
+        vm.b = 'hi';
+        console.log('param.b')  //=> undefined
+        console.log(param.b)    //=> undefined
+        //반대로도 마찬가지로 갱신되지 않습니다.    
+        param.c = 'hey';  
+        console.log('vm.c'); //=> undefined
+        console.log(vm.c);   //=> undefined
+        //나중에 추가해야 할 값이 있다면 공백 형태로라도 미리 선언해 두어야 합니다.
+
+        // 원래는 이렇게 버튼을 누르면 값이 수정돼야 하는데 (위 div#app1 참조)
+        var tval1 = {foo1:'bar1'};
+        var app1 = new Vue({
+            el: '#app1',
+            data: tval1
+        });
+
+        // 유일한 예외는 Object.freeze()를 사용하는 경우입니다.
+        // 변수를 수정해도 반영되지 않습니다.
+        var tval2 = {foo2:'bar2'};
+        Object.freeze(tval2)
+        var app2 = new Vue({
+            el: '#app2',
+            data: tval2
+        });
+        // >>>>>>>>>>>>>>>>>>>>>>>> responsive data binding
+
+        //<<<<<<<<<<<<<<<<<<<< life cycle
+        new Vue({
+            data: {
+                a: 1
+            },
+            beforeCreate() {
+                // 이 함수는 객체가 초기화된 직후에 실행됩니다. 
+                //값들이 들어가기도 전이므로 undefined 가 출력되는 걸 알 수 있습니다.
+                console.log('a is: ' + this.a); //=> a is: undefined
+                
+            },
+            created: function () {
+                //객체가 초기화되고 난 바로 뒤에 실행됩니다.
+                // 값들이 들어가 있으므로 data 속성의 a 값이 출력되는 것을 알 수 있습니다.
+                // 아래에서 `this` 는 vm 변수 안에 들어 있는 Vue 인스턴스를 가리킵니다.
+                console.log('a is: ' + this.a); // => "a is: 1"
+            }
+        })
+
+    </script>
+</body>
+</html>

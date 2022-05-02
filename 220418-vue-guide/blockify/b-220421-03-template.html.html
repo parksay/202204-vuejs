@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    // 디렉티브란?
+    // 디렉티브는 Vue에서 제공하는 특수 속성임을 나타내는 v- 접두어가 붙어 있으며 사용자가 짐작할 수 있듯이 렌더링 된 DOM에 특수한 반응형 동작을 합니다.
+        
+    <!-- v-once -->
+    <!-- 나중에 값이 바뀌더라도 초기값으로 렌더링 고정하기 -->
+    <div id='app-1'>
+        <span class="responsible">message: {{ msg }} </span>
+        <br>
+        <span>input: app1.msg = 'some new msg'; </span>
+        <br>
+        <span class="non-responsible" v-once>this message is not updated: {{ msg }} </span>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    //디렉티브 > v-once 
+    //값을 초기값으로 고정합니다. 나중에 값이 바뀌더라도 반영하지 않습니다.
+    var app1 = new Vue({
+        el: '#app-1',
+        data: {
+            msg: 'this is msg before'
+        }
+    })
+    app1.msg = 'this is msg after';
+    //span.responsible => data가 동적으로 계속 바뀝니다.
+    //span.non-responsible => 초기에 객체 생성할 때 넣어준 값에서 변하지 않습니다.
+
+
+    <!-- v-html -->
+    <!-- 텍스트 값을 html 요소로 생성하기 -->
+    <div id='app-2'>
+        <p> {{ text4HTML }} </p>
+        <p v-html="text4HTML"> this message here disappears </p>
+        <div><input type="button" value="attack server" v-on:click="changeInputContent"></div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    //디렉티브 > v-html 
+    //{{ msg }} 안에 넣으면 그냥 문자열로만 해석합니다. '<input>' 이나 '<span>' 등을 입력해도 텍스트로써 다루기 때문에 그대로 출력됩니다.
+    // html 요소로 parsing 하길 바란다면 v-html 디렉티브를 써야 합니다.
+    // v-html="param" / param 안에 html로 변환하고 싶은 텍스트를 전달해 줍니다.
+    var app2 = new Vue({
+        el: "#app-2",
+        data: {
+            text4HTML: '<span> this tag is parsed from text </span>'
+        },
+        methods: {
+            changeInputContent: function() {
+                this.text4HTML = "<input type='text' value='I can attack the server through'/>";
+            }
+        }
+    });
+    //사용자 단에서 html 태그를 조작해서 공격할 수 있으니 조심해서 써야 한다고 강조합니다.
+
+
+
+    <!-- v-bind -->
+    <!-- 사용자 입력값과 자바스크립트 간의 양방향 데이터 바인딩 -->
+    <div id="app-3">
+        <div>input: app3.idAfter="someNewId";</div>
+        <div><input type="text" v-bind:id="idBefore" placeholder="check the id of this tag" /></div>
+        <div><input type="text" v-bind:id="idAfter" placeholder="check the id of this tag" /></div>
+        <div><input type="text" v-bind:class="classVal" placeholder="check the class of this tag" /></div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    //디렉티브 > v-bind 
+    //html 에서 text 로 넣고 싶은 내용은 {{ msg }} 로 불러다 쓸 수 있습니다.. 이 문법은 머스태시(콧수염) 방식이라고 함.
+    //근데 html 태그 안에서는 콧수염 방식은 사용할 수 없습니다. 예를 들어 <input id="{{ msg }}"> 이렇게는 쓸 수 없다는 뜻입니다.
+    //그럼 태그 안에서 동적으로 값을 참조하고 싶다면 어떻게 해야 할까요? 
+    //v-bind 라는 속성을 씁니다. 콜론 ' : ' 뒤로 태그의 어떤 속성에 연결할지 파라미터를 넘겨 줍니다. 이어서 등호 ' = ' 뒤로 값을 넣어 줌.
+    //예를 들어 input 태그의 id 속성에 msg 변수의 값을 넣고 싶다면 다음과 같이 씁니다.<input v-bind:id="msg"> => <input id="val1">
+    //또 다른 예로, span 태그의 class 속성에 msg 변수의 값을 넣고 싶다면 다음과 같이 씁니다. <span v-bind:class="msg">  => <span class="val2">
+    var app3 = new Vue({
+        el: '#app-3',
+        data: {
+            idBefore: 'idFromVueBefore',
+            idAfter: 'idFromVueAfter',
+            classVal: 'classFromVue'
+        }
+    })
+    // Vue 인스턴스의 data 값이 바뀌면 그 값을 참고하고 있는 태그들의 속성값도 실시간으로 바뀝니다.
+
+
+    <!-- JavaScript exp -->
+    <!-- 간단한 자바스크립트 표현식 사용 -->
+    <div id="app-4">
+        <div> you can use JavaScript expression </div>
+        <div> {{ numVal * 2 }} </div>
+        <div> {{ numVal * 2 }} </div>
+        <div> {{ textVal.split('').reverse().join('') }} </div>
+        <div> {{ textVal.split('').reverse().join('') }} </div>
+        <!-- below line doesnt work. It occurs error -->
+        <!-- <div> {{ var val = numVal; console.log(val * 2); }} </div> -->
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    //JavaScript 표현 식
+    //콧수염 표현식 안에서는 간단한 JavaScript 표현식을 사용할 수 있습니다.
+    var app4 = new Vue({
+        el: '#app-4',
+        data: {
+            numVal: 6,
+            textVal: 'hello world!'
+        }
+    })
+
+
+    <!-- directive parameter -->
+    <!-- 디렉티브에 전달인자 넣기 -->
+    <div id="app-5">
+        <div>input: app5.isDisplayAfter = true;</div>
+        <div>input: app5.urlValAfter = '?changedKey=changedVal';</div>
+        <div>input: app5.vueClickAfter = function() {alert('changed msg');};</div>
+        <div><p v-if="isDisplayBefore"> 'isDisplay' decides display value </p></div>
+        <div><a v-bind:href="urlValBefore"> click this text and check the url </a></div>
+        <div><input type="button" v-on:click="vueClickBefore" value="testBtn1"/></div>
+        <div><p v-if="isDisplayAfter"> 'isDisplay' decides display value (changed) </p></div>
+        <div><a v-bind:href="urlValAfter"> click this text and check the url (changed) </a></div>
+        <div><input type="button" v-on:click="vueClickAfter" value="testBtn2"/></div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 디렉티브 > 전달 인자
+    // 태그 안에서 콜론 ':' 뒤로 파라미터를 던져줄 수 있습니다.
+    // 예를 들어 다음과 같습니다. v-on:click / v-bind:class / v-bind:href 
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            isDisplayBefore: false,
+            urlValBefore: '?testKey=testVal',
+            isDisplayAfter: false,
+            urlValAfter: '?testKey=testVal'
+        },
+        methods: {
+            vueClickBefore: function() {
+                alert('this is alert msg');
+            },
+            vueClickAfter: function() {
+                alert('this is alert msg');
+            }
+        }
+    })
+
+
+
+    <!-- dynamic directive parameter -->
+    <!-- 디렉티브에 전달인자를 동적으로 전달하기 -->
+    <div id="app-6">
+        <div>input: app6.key2 ="id"; </div>
+        <div>input: app6.val2 ="classFromVueAfter"; </div>
+        <div>input: app6.event2="mouseover"; </div>
+        <div>input: app6.testFuncAfter=function() { alert("some new msg");}; </div>
+        <div>input: app6.customattr2="custAttributeAfter"; </div>
+        <div>input: app6.yourAttr2="yourAttributeAfter"; </div>
+        <div>
+            <input type="text" v-bind:[key1]="val1" placeholder="check parameter" />
+        </div>
+        <div>
+            <input type="text" v-bind:[key2]="val2" placeholder="the attribute of this tag changes dynamically"/>
+        </div>
+        <div>
+            <input type="button" v-on:[event1]="testFuncBefore" value="click here">
+        </div>
+        <div>
+            <input type="button" v-on:[event2]="testFuncAfter" value="change event to mouseover">
+        </div>
+        <div>
+            <span v-bind:[customattr1]="yourAttr1"> you can change the name of attribute of below tag </span>
+        </div>
+        <div>
+            <span v-bind:[customattr2]="yourAttr2"> parameters in '[]' must be lower case </span>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    // 디렉티브 > 동적 전달 인자
+    // 태그 안에서 디렉티브를 속성으로 사용할 때 콜론 ':' 뒤로 파라미터를 넘겨준다고 했습니다.
+    // 그런데 이 파라미터 자체가 동적으로 변하는 상황이라면 어떻게 해야 할까요?
+    // 대괄호 ' [] ' 안에 변수를 참조하면 그 값을 동적으로 넘겨줄 수 있습니다.
+    // 나중에 가서 참조하고 있는 값이 바뀌면 실시간으로 영향을 받습니다. 
+    // 값을 동적으로 바꿀 수 있다는 말입니다. 아니, 오히려 자꾸 바뀌는 값은 동적으로 넣으라는 말입니다.
+    // 예를 들어 <input v-bind:[key] = "val"> 에서 'key' 변수의 값이 'id'에서 'class'로 바뀐다면, html 요소는 <input id="val"> 에서 <input class="val">로 바뀝니다.
+    // 또 다른 예로, <button v-on:[eventKey] = "eventHandler"> 에서 변수 'eventKey' 의 값이 'click'에서 'mouseover'로 바뀐다면 html 요소는 <button v-on:click="eventHandler"> 에서 <button v-on:mouseover="eventHandler"> 로 바뀝니다.
+    var app6 = new Vue({
+        el: '#app-6',
+        data: {
+            key1: "class",
+            val1: "classFromVue",
+            event1: 'click',
+            handle1: "testFunc",
+            customattr1: "custAttribute",
+            yourAttr1: "yourAttribute",
+            key2: "class",
+            val2: "classFromVueBefore",
+            event2: 'click',
+            handle2: "testFuncBefore",
+            customattr2: "custAttributeBefore",
+            yourAttr2: "yourAttributeBefore"
+        },
+        methods: {
+            testFuncBefore: function() {alert("here msg");},
+            testFuncAfter: function() {alert("changed msg");},
+        }
+    })
+
+
+
+    <!-- alias of directive -->
+    <!-- 디렉티브 축약어 -->
+    <!-- <a v-on:click="doSomething"> ... </a> 왼쪽 구문은 오른쪽으로 줄일 수 있습니다. <a @click="doSomething"> ... </a> -->
+    <!-- <a v-on:[eventkey]="eventHandler"> ... </a> 왼쪽 구문은 오른쪽으로 줄일 수 있습니다. <a @[eventkey]="eventHandler"> ... </a> -->
+
+    <div id="app-7">
+        <div><a v-bind:href="urlVal">this is full statement</a></div>
+        <div><a :href="urlVal">and this is alias</a></div>
+        <div><span :[key1]="val1"> also parameters can be alias </span></div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+    //축약어 
+    // ' v-bind:class ' 왼쪽 구문은 오른쪽으로 줄일 수 있습니다 ' :class '
+    // ' v-bind:href ' 왼쪽 구문은 오른쪽으로 줄일 수 있습니다 ' :href '
+    var app7 = new Vue({
+        el: '#app-7',
+        data: {
+            urlVal: '?hello=world',
+            key1: "customAttr",
+            val1: "customVal"
+        }
+    })
+
+    
+    <script>
+        
+
+
+        
+
+
+
+
+
+
+        
+
+
+        </script>
+</body>
+</html>
