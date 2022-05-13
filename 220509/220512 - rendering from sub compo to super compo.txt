@@ -1,0 +1,203 @@
+//super
+<template>
+    <div>
+        <searchBox v-on:updateProductList="updateProductList"></searchBox>
+        <productTable v-model:list="productList"></productTable>
+    </div>
+</template>
+
+<script>
+    import searchBox from "@/components/epc/Searchbox.vue"
+    import productTable from "@/components/epc/ProductTable.vue"
+    export default {
+        data() {
+            return {
+            }
+        },
+        components: {
+            searchBox,
+            productTable
+        },
+        methods: {
+            updateProductList: function(param) {
+                console.log('updateProductList > param');
+            },
+
+        }
+    }
+</script>
+
+//sub1
+<template>
+    <div>
+        <table class="col">
+            <tbody>
+                <tr v-for="item in list" v-bind:key="item">
+                    <td>
+                        {{ item.sales_id }}
+                    </td>
+                    <td>
+                        {{ item.model_code }}
+                    </td>
+                    <td>
+                        {{ item.model_nm }}
+                    </td>
+                    <td>
+                        {{ item.price }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+<script>
+    export default {
+        name: "productTable",
+        data() {
+            return {
+                productList: []
+            };
+        },
+        methods: {
+            updateProductList: function(list) {
+                console.log('updateProductList');
+                console.log(list);
+                this.productList = list;
+                console.log(this.productList);
+            }
+        }
+    };
+</script>
+
+
+
+
+//
+> sub1 에서
+하위 컴포넌트 productTable은 내부 변수로 productList를 가지고 있다.
+이 list를 가지고 반복문을 만들어서 테이블에 뿌려주고 있었다.
+Vue에서는 참조하고 있는 값이 바뀌면 실시간으로 렌더링이 되어야 한다.
+그러려고 Vue를 쓰는 거니까.
+그런데 list 값을 바꿔도 테이블이 다시 렌더링 되지 않았다.
+아무리 찾아도 렌더링이 안 될 이유가 없었다.
+
+
+상위 컴포넌트에서 하위 컴포넌트로 파라미터를 던져줬다.
+하위 컴포넌트는 파라미터를 받아서 내부 변수에 넣어줬다.
+내부 변수 값이 바꼈으므로, 그 값을 참조하고 있는 테이블도
+그 값이 반영되도록 렌더링이 다시 되어야 한다.
+그런데 계속해서 아무 일도 일어나지 않았다.
+도대체 이유가 무엇일까?
+
+하위 컴포넌트 내부 메소드 updateProductList가 실행되는 것까지 확인했다.
+파라미터도 함께 잘 넘어오는 것까지 확인했다.
+받아온 리스트를 내부 변수 안에 넣은 후에 잘 들어갔는지 확인도 했다.
+{{ item.attrName }}
+속성 접근값이 달라서 에러가 나는 건가 해서 
+list를 콘솔로 찍어 보고 츨력값과 모두 같도록 확인했다.
+태그들 사이의 계층 구조도 확인했다.
+콘솔에는 어떠한 오류는 없었고 렌더링은 여전히 되지 않았다.
+
+콘솔로 Vue 객체를 찍어 봤다.
+인스턴스 내부에는 값이 잘 들어가 있었다.
+그렇다면 그 값을 참조하고 있는 화면 요소들도 함께 렌더링되어야 한다.
+아니, 렌더링 되었을 것이다.
+단지 화면상으로 반영되지 않았을 뿐일 것이다.
+화면상 요소들이 변하지 않고 있을 뿐일 것이다.
+렌더링이 어딘가에서 막혀 있을 것이다.
+
+양방향 바인딩은 확실하게 작동하므로 v-model 디렉티브로 실험해 봤다.
+이전에는 아래와 같이 상위 컴포넌트에서 하위 컴포넌트의 메소드를 호출하고 있었다.
+productTable.methods.updateProductList(list);
+이 기능을 수정하여 일회성으로 호출하지 않고 양방향 바인딩이 되도록 바꿨다.
+<productTable v-model:list></productTable>
+이전에는 하위 컴포넌트의 메소드를 호출하면서 파라미터로 던져주는 형태였다.
+이제는 상위 컴포넌트에서 내부 변수로 list를 들고 있으면서,
+이 내부 변수 list를 v-model 디렉티브로 하위 컴포넌트와 바인딩하는 형태로 바꿨다.
+상위 컴포넌트에서 바인딩해 주는 값은 하위 컴포넌트에서 props 속성으로 받을 수 있다.
+
+이렇게 하니까 해결이 되었다.
+상위 컴포넌트에서 list 값을 바꾸자
+그 값을 참조하고 있는 하위 컴포넌트에서도 렌더링이 일어났다.
+'상위 컴포넌트 -> 하위 컴포넌트' 방향으로는 렌더링이 실시간으로 반영된다.
+반면에 '하위 컴포넌트 -> 상위 컴포넌트' 방향으로는 렌더링이 일어나지 않는다.
+즉 하위 컴포넌트는 상위 컴포넌트의 렌더링을 유발하지 못한다.
+상위 컴포넌트 A에서 하위 컴포넌트 B, C, D를 불러다 쓰고 있을 때
+이 세 컴포넌트 모두에서 실시간으로 렌더링이 반영되기를 원하는 값이 있다면
+그 값들을 가장 상위 컴포넌트인 A 컴포넌트로 수렴시켜야 한다.
+
+
+//super
+<template>
+    <div>
+        <searchBox></searchBox>
+        <productTable v-model:list="productList"></productTable>
+    </div>
+</template>
+
+<script>
+    import searchBox from "@/components/epc/Searchbox.vue"
+    import productTable from "@/components/epc/ProductTable.vue"
+    export default {
+        data() {
+            return {
+                productList:[]
+            }
+        },
+        components: {
+            searchBox,
+            productTable
+        },
+        methods: {
+            updateProductList: function(param) {
+                console.log('updateProductList > param');
+                console.log(param);
+                this.productList = param;
+            },
+
+        }
+    }
+</script>
+
+
+//sub1
+<template>
+    <div>
+        <table class="col">
+            <tbody>
+                <tr v-for="item in list" v-bind:key="item">
+                    <td>
+                        {{ item.sales_id }}
+                    </td>
+                    <td>
+                        {{ item.model_code }}
+                    </td>
+                    <td>
+                        {{ item.model_nm }}
+                    </td>
+                    <td>
+                        {{ item.price }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+<script>
+    export default {
+        name: "productTable",
+        props: {
+            list: Array
+        },
+        data() {
+            return {
+                productList: []
+            };
+        },
+        methods: {
+            eventClickRow: function(data) {
+                console.log(data);
+            }
+        }
+    };
+</script>
