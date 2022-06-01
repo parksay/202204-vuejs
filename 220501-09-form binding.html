@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <title>Document</title>
+</head>
+<body>
+
+    <!-- // 01 - text  -->
+    <div id="app-1">
+        <div>
+            <input type="text" v-model="textVal" v-on:input="eventInput" placeholder="check the console log to watch input event" >
+        </div>
+        <div>
+            <textarea v-model="textVal" cols="30" rows="10"  v-on:input="eventInput"  placeholder="watch console log to check other element's event"> use v-model instead of {{ textVal }} here</textarea>
+        </div>
+        <div>
+            <p v-html="textVal"></p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    <!-- // 02 - checkbox -->
+    <div id="app-2">
+        <div>
+            <input type="checkbox" v-model="checkedItem" v-on:change="eventChangeItem">
+            <p>{{ checkedItem }}</p>
+        </div>
+        <div>
+            <input type="checkbox" id="item1" value="apple" v-model="checkedList" v-on:change="eventChange4Checkbox">
+            <label for="item1">i like apple</label>
+            <input type="checkbox" id="item2" value="mango" v-model="checkedList"  v-on:change="eventChange4Checkbox">
+            <label for="item2">do you want some mango?</label>
+            <input type="checkbox" id="item3" value="orange" v-model="checkedList"  v-on:change="eventChange4Checkbox">
+            <label for="item3">please give me orange</label>
+            <input type="checkbox" id="item4" value="melon" v-model="checkedList"  v-on:change="eventChange4Checkbox">
+            <label for="item4">i'm listening to the melon</label>
+        </div>
+        <div>
+            <p>{{ checkedList }}</p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    <!-- // 03 - radio -->
+    <div id="app-3">
+        <div>
+            <input type="radio" id="pick1" value="red" v-model="pickedItem"  v-on:change="eventChange4Radio">
+            <label for="pick1">red food is good for health</label>
+            <input type="radio" id="pick2" value="yellow" v-model="pickedItem" v-on:change="eventChange4Radio">
+            <label for="pick2">yellow makes me happy</label>
+            <input type="radio" id="pick3" value="orange" v-model="pickedItem" v-on:change="eventChange4Radio">
+            <label for="pick3">my favorite color is orange</label>
+            <input type="radio" id="pick4" value="green" v-model="pickedItem" v-on:change="eventChange4Radio">
+            <label for="pick4">do you like green?</label>
+        </div>
+        <div>
+            <p>{{ pickedItem }}</p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    <!-- // 04 - select -->
+    <div id="app-4">
+        <select v-model="selectedVal" v-on:change="eventChange4SelectVal">
+            <option value="sel1">chicken</option>
+            <option value="sel2">pizza</option>
+            <option value="sel3">sushi</option>
+            <option value="sel4">steak</option>
+        </select>
+        <div>
+            <p>you selected {{ selectedVal }} now</p>
+        </div>
+        <select v-model="selectedText" v-on:change="eventChange4SelectText">
+            <option>chicken</option>
+            <option>pizza</option>
+            <option>sushi</option>
+            <option>steak</option>
+        </select>
+        <div>
+            <p>why don't we eat some {{ selectedText }} tomorrow!</p>
+        </div>
+        <select v-model="selectedOpt" v-on:change="eventChange4SelectOpt">
+            <option v-for="item in optList"> {{ item }}</option>
+        </select>
+        <div>
+            <p>you chose {{ selectedOpt }} for drink!</p>
+        </div>
+        <select v-model="selectedDrink" v-on:change="eventChange4SelectObj">
+            <option v-for="item in optObjList" v-bind:value="item.drink"> {{ item.food }}</option>
+        </select>
+        <div>
+            <p>you selected {{ selectedDrink }} </p>
+        </div>
+        <select v-model="selectedObj" v-on:change="eventChange4SelectObj">
+            <option v-for="item in optObjList" v-bind:value="item"> {{ item.food }}</option>
+        </select>
+        <div>
+            <p>{{ selectedObj.drink }} is recommend drink for your {{ selectedObj.food }}! </p>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+    <!-- //05 - postfix -->
+    <div id="app-5">
+        <div>
+            <input type="text" v-model.number="inputVal" placeholder="with number postfix">
+            <button v-on:click="checkType" >checkType</button>
+        </div>
+        <div>
+            <input type="text" v-model="inputVal" placeholder="without number postfix">
+            <button v-on:click="checkType" >checkType</button>
+        </div>
+    </div>
+    <div>----------------------------------------------------<br></div> 
+
+
+
+    <script>
+        // 00 - v-model 디렉티브
+        // v-model 디렉티브를 시용하여 input과 textarea 요소에 양방향 데이터 바인딩을 연결할 수 있습니다.
+        // input type에 따라서 데이터 연결하는 방법이 자동으로 바뀝니다.
+        // input:text와 textarea는 value 속성과 input 이벤트를 사용합니다.
+        // input:checkbox와 input:radio는 checked 속성과 change 이벤틀르 사용합니다.
+        // select는 prop으로 value 를 사용하고, 이벤트로 change를 사용합니다.
+        
+        // 01 - text 
+        // v-model 을 이용해서 data 속성 안의 변수를 연결할 수 있습니다.
+        // 사용자가 값을 입력하면 자동으로 data가 바뀌고, 반대로 data가 바뀌면 자동으로 화면에 반영합니다.
+        // textarea 태그 안에서는 콧수염 {{ }} 문법을 사용할 수 없습니다. 대신 v-model을 사용합니다.
+        // p 태그에 vue 데이터를 출력하는 방법은 두 가지입니다. 
+        // 하나는 콧수염 문법 {{ textVal }}을 이용하는 것이고, 다른 하나는 v-html 디렉티브를 이용하는 방법입니다.
+        // input:text와 textarea는 input 이벤트를 사용합니다.
+        var app1 = new Vue({
+            el: '#app-1',
+            data: {
+                textVal : ''
+            },
+            methods: {
+                eventInput: function() {
+                    console.log('input event: ' + this.textVal);
+                }
+            }
+        });
+        
+        // 02 - checkbox
+        // checkbox 하나에 연결된 값은 boolean 값을 가집니다.
+        // checkbox 여러 개를 하나의 배열에 바인딩할 수도 있습니다.
+        // 배열에 연결시키면 input 태그에 value 속성으로 넣어 두었던 값이 배열 안으로 들어갑니다.
+        // label 요소의 for 속성과 checkbox 요소의 id 속성을 같도록 맞춰 주면 클릭할 수 있는 영역이 생깁니다.
+        var app2 = new Vue({
+            el: '#app-2',
+            data: {
+                checkedItem: false,
+                checkedList: []
+            },
+            methods: {
+                eventChangeItem: function () {
+                    console.log('checkbox item event:' + this.checkedItem );
+                },
+                eventChange4Checkbox: function() {
+                    console.log('checkbox list event:' + this.checkedList);
+                    
+                }
+            }
+        });
+        
+        // 03 - radio
+        // radio 태그에서 v-model 을 이용하면 같은 data 값에 바인딩된 radio 들을 자동으로 찾아서 묶어줍니다.
+        // 선택한 radio 태그의 value 값이 v-model 변수 안으로 들어갑니다.
+        // label 요소의 for 속성과 checkbox 요소의 id 속성을 같도록 맞춰 주면 클릭할 수 있는 영역이 생깁니다.  (checkbox와 마찬가지)
+        var app3 = new Vue({
+            el: '#app-3',
+            data: {
+                pickedItem: '',
+            },
+            methods: {
+                eventChange4Radio: function() {
+                    console.log('radio event:' + this.pickedItem);
+                    
+                }
+            }
+        });
+        
+        // 04 - select
+        // select 태그에 v-model 을 연결할 수 있습니다.
+        // option 태그의 value 속성 값이 v-model에 연결된 변수로 들어갑니다.
+        // option 태그에 value 속성이 없다면 innerText가 v-model 변수 안으로 들어갑니다.
+        // v-model 로 바인딩된 해당 변수에 초기값을 설정할 수 있습니다.
+        // list 를 이용하여 동적으로 option 태그를 만들 수 있습니다.
+        // list 안에는 단순한 text가 요소로 들어갈 수도 있고, 객체가 들어갈 수도 있습니다.
+        // option 태그의 value 값은 객체 자체를 value 값으로 넣을 수도 있고, 객체의 한 속성만 끄집어내어서 text로 넣을 수도 있습니다.
+        var app4 = new Vue({
+            el: '#app-4',
+            data: {
+                selectedVal: 'sel1',
+                selectedText: 'pizza',
+                optList: ['coke', 'sprite', 'beer'],
+                selectedOpt: '',
+                optObjList: [
+                    {food: 'pizza', drink: 'coke'},
+                    {food: 'sushi', drink: 'sprite'},
+                    {food: 'chicken', drink: 'beer'}
+                ],
+                selectedDrink: '',
+                selectedObj:{}
+            },
+            methods: {
+                eventChange4SelectVal: function() {
+                    console.log('select val event:' + this.selectedVal);
+                    
+                },
+                eventChange4SelectText: function() {
+                    console.log('select text event:' + this.selectedText);
+                    
+                },
+                eventChange4SelectOpt: function() {
+                    console.log('select opt event:' + this.selectedOpt);
+                    
+                },
+                eventChange4SelectObj: function() {
+                    console.log('select obj event:' + this.optObjList);
+                    
+                },
+            }
+        });
+        
+
+        // 05 - postfix
+        // v-model 에 사용할 수 있는 수식어 postfix 도 있습니다.
+        // .number  /=> 사용자가 입력한 값을 자동으로 숫자로 형변환합니다. 만약 문자열이라면 문자열인 채로 둡니다.
+        // .trim    /=> 사용자가 입력한 값에서 공백을 자동으로 제거하는 trim() 을 실행합니다.
+        var app5 = new Vue({
+            el: '#app-5',
+            data: {
+                inputVal:'',
+            },
+            methods: {
+                checkType: function() {
+                    alert(typeof(this.inputVal));
+                }
+            }
+        });
+        
+    </script>
+</body>
+</html>
