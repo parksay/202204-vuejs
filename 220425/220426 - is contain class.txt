@@ -1,11 +1,11 @@
-//$(document).on('click', 'a.btnType', function(){});
-//     document.addEventListener('click', (e) => {
-//         console.log("DOMLoaded click event");
-//         console.log(e);
-//         if (e.target.parentNode.tagName == 'a' && e.target.parentNode.classList.contains('btnType')) {
-//             e.preventDefault();
-//         }
-//     });
+$(document).on('click', 'a.btnType', function(){});
+document.addEventListener('click', (e) => {
+    console.log("DOMLoaded click event");
+    console.log(e);
+    if (e.target.parentNode.tagName == 'a' && e.target.parentNode.classList.contains('btnType')) {
+        e.preventDefault();
+    }
+});
 
 
 어떤 요소가 특정 클래스를 포함하는지?
@@ -32,3 +32,5 @@ console.log(  arr.includes('hello')  );
 
 javaScript 에서 배열과 객체는 내부적으로 같은 자료형이기 때문에 
 includes() 멤버 메소드를 함께 가져가는 것도 직관적으로 느껴진다.
+
+- 220426

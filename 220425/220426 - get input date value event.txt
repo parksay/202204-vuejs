@@ -68,3 +68,4 @@ this.value는 작동하지 않았다.
 event.target.value 로 값을 받아 오고, index로 위치를 받아 온다.
 
 
+-220426
